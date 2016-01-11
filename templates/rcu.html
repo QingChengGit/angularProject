@@ -1,0 +1,135 @@
+<div class="rcu" ng-if="!main.isSuper && rcu.type === 'setRCU'">
+    <title-bar title-name="RCU全局配置" show-search="false"></title-bar>
+    <form name="rcuForm" class="pl-form rcu-form">
+        <div class="form-item">
+            <label class="form-key">板卡类型:</label>
+            <select ng-model="rcu.rcuConf.boardType" name="boardType" required
+                    ng-options="s.id.toString() as s.nameCn for s in rcu.boardTypeList"></select>
+            <span class="valid-msg" ng-show="rcu.isSubmit && rcuForm.boardType.$invalid">请选择板卡类型</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">软件版本:</label>
+            <input class="form-value" type="text" ng-model="rcu.rcuConf.version"/>
+        </div>
+        <div class="form-item">
+            <label class="form-key">端口号:</label>
+            <input class="form-value" name="port" type="text" ng-model="rcu.rcuConf.port" ng-maxlength="" required/>
+            <span class="valid-msg" ng-show="rcu.isSubmit && rcuForm.port.$invalid">请输入正确端口号1-65535之间</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">网络连接数:</label>
+            <input class="form-value" type="text" ng-model="rcu.rcuConf.connNum"/>
+        </div>
+        <div class="form-item">
+            <label class="form-key">出厂编号:</label>
+            <input class="form-value" type="text" ng-model="rcu.rcuConf.factoryNum"/>
+        </div>
+        <div class="form-item">
+            <label class="form-key">系统版本:</label>
+            <input class="form-value" type="text" ng-model="rcu.rcuConf.osVersion" />
+        </div>
+        <div class="form-item">
+            <label class="form-key">DI路数:</label>
+            <select class="form-value" name="digitalInputNum" ng-model="rcu.rcuConf.digitalInputNum" required>
+                <option value="NUM32">32路</option>
+                <option value="NUM64">64路</option>
+                <option value="NUM96">96路</option>
+                <option value="NUM128">128路</option>
+            </select>
+            <span class="valid-msg" ng-show="rcu.isSubmit && rcuForm.digitalInputNum.$invalid">请选择DI路数</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">AI路数:</label>
+            <select class="form-value" name="analogInputNum" ng-model="rcu.rcuConf.analogInputNum" required>
+                <option value="NUM32">32路</option>
+                <option value="NUM64">64路</option>
+                <option value="NUM96">96路</option>
+                <option value="NUM128">128路</option>
+            </select>
+            <span class="valid-msg" ng-show="rcu.isSubmit && rcuForm.analogInputNum.$invalid">请选择AI路数</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">DO路数:</label>
+            <select class="form-value" name="digitalOutputNum" ng-model="rcu.rcuConf.digitalOutputNum" required>
+                <option value="NUM32">32路</option>
+                <option value="NUM64">64路</option>
+                <option value="NUM96">96路</option>
+                <option value="NUM128">128路</option>
+            </select>
+            <span class="valid-msg" ng-show="rcu.isSubmit && rcuForm.digitalOutputNum.$invalid">请选择DO路数</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">PW路数:</label>
+            <select class="form-value" name="powerNum" ng-model="rcu.rcuConf.powerNum" required>
+                <option value="NUM1">1路</option>
+                <option value="NUM2">2路</option>
+                <option value="NUM3">3路</option>
+                <option value="NUM4">4路</option>
+                <option value="NUM5">5路</option>
+                <option value="NUM6">6路</option>
+                <option value="NUM7">7路</option>
+                <option value="NUM8">8路</option>
+            </select>
+            <span class="valid-msg" ng-show="rcu.isSubmit && rcuForm.powerNum.$invalid">请选择PW路数</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">空调路数:</label>
+            <select class="form-value" name="airConditionerNum" ng-model="rcu.rcuConf.airConditionerNum" required>
+                <option value="NUM1_4">1-4路</option>
+                <option value="NUM5_8">5-8路</option>
+            </select>
+            <span class="valid-msg" ng-show="rcu.isSubmit && rcuForm.airConditionerNum.$invalid">请选择空调路数</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">调光路数:</label>
+            <select class="form-value" name="dimmerNum" ng-model="rcu.rcuConf.dimmerNum" required>
+                <option value="NUM1_4">1-4路</option>
+                <option value="NUM5_8">5-8路</option>
+            </select>
+            <span class="valid-msg" ng-show="rcu.isSubmit && rcuForm.dimmerNum.$invalid">请选择调光路数</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">RCU到期时间:</label>
+            <input class="form-value" type="text" ng-model="rcu.rcuConf.timeLock" /><label class="form-key">(小时)</label>
+        </div>
+        <p class="list-title">灯光模式配置</p>
+        <div class="form-item" ng-repeat="item in rcu.rcuConf.lightMode">
+            <label class="form-key light-mode-label">路数:</label><input class="form-value" type="text" ng-model="item.nums"/>
+            <label class="form-key light-mode-label last-label">灯光模式:</label>
+            <select class="form-value" ng-model="item.modeId" ng-options="s.id.toString() as s.nameCn for s in rcu.lightModeList">
+            </select>
+            <div class="operate-btn">
+                <a class="link-btn noselect" ng-click="rcu.addLightMode()">+</a>
+                <a class="link-btn noselect" ng-if="rcu.rcuConf.lightMode.length > 1" ng-click="rcu.removeLightMode(item)">-</a>
+            </div>
+        </div>
+        <div class="operate-btn-area">
+            <div class="operate-btn blue-btn" ng-click="rcu.updateRCU(rcuForm.$valid, rcu.rcuConf);">确定</div>
+        </div>
+    </form>
+</div>
+<div class="rcu" ng-if="!main.isSuper && rcu.type === 'setTemplate'">
+    <title-bar title-name="RCU模板设置" show-search="false"></title-bar>
+    <form name="rcuForm" class="pl-form rcu-form">
+        <div class="form-item">
+            <label class="form-key">房间类型:</label>
+            <select ng-model="rcu.rcuTemplate.roomType" ng-change="rcu.getRCUTemplate(rcu.rcuTemplate.roomType);"
+                    ng-options="s.id.toString() as s.name for s in rcu.roomTypeList"></select>
+        </div>
+        <div ng-repeat="template in rcu.rcuTemplate.rcuTemplate">
+            <p class="list-title" ng-bind="template.lineTypeCn"></p>
+            <div class="add-remove-btn">
+                <a class="link-btn noselect" ng-click="rcu.addTemplate(template.lineType)">添加一行</a>
+                <a class="link-btn noselect" ng-click="rcu.removeTemplate(template.lineType)">删除一行</a>
+            </div>
+            <div class="form-item" ng-repeat="item in template.roomRCUCfgEntityJsons">
+                <label class="form-key light-mode-label">第{{$index+1}}路:</label>
+                <input class="form-value" type="text" ng-model="item.name"/>
+            </div>
+        </div>
+        <div class="operate-btn-area">
+            <div class="operate-btn blue-btn" ng-click="rcu.setTemplate(rcu.rcuTemplate);">确定</div>
+            <div class="operate-btn blue-btn" ng-click="rcu.applyTemplate(rcu.rcuTemplate.roomType);">应用</div>
+        </div>
+    </form>
+</div>

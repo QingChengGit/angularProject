@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>用户登录</title>
+    <!-- build:css styles/login.css -->
+    <link rel="stylesheet" type="text/css" href="styles/login.css" />
+    <!-- endbuild -->
+</head>
+<body class="ifc">
+<form class="login-form border-radius">
+    <p class="login-title">欢迎登录屏联智能酒店管理后台</p>
+    <div class="login_body">
+        <input type="text" id="js_user_name" class="login-input border-radius" name="userName" placeholder="用户名"/>
+        <p class="error-msg">请输入用户名!</p>
+        <input type="password" id="js_pwd" class="login-input border-radius" name="pwd" placeholder="密码"/>
+        <p class="error-msg">请输入密码!</p>
+        <input type="text" id="js_code" class="login-input border-radius code-input" name="pwd" placeholder="验证码"/>
+        <img src="api/admin/code" class="valid-code-img"/>
+        <p class="error-msg">请输入验证码!</p>
+    </div>
+    <button id="js_login_btn" class="login-btn border-radius">登陆</button>
+</form>
+<!-- build:js js/login.js -->
+<script type="text/javascript" src="js/libs/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="js/login.js"></script>
+<!-- endbuild -->
+</body>
+</html>

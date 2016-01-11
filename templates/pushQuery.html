@@ -1,0 +1,35 @@
+<div class="static">
+    <title-bar title-name="源数据信息查询" show-search="false"></title-bar>
+    <form name="staticForm" class="pl-form">
+        <div class="form-item">
+            <label class="form-key">酒店名称:</label>
+            <input class="form-value" type="text" ng-model="room.curRoom.unit"/>
+        </div>
+        <div class="form-item">
+            <label class="form-key">查询时间:</label>
+            <input class="form-value" type="text" ng-model="room.curRoom.unit"/>
+        </div>
+        <a class="link-btn">更多</a>
+        <div class="operate-btn-area">
+            <div class="operate-btn blue-btn" ng-click="room.updateRoom(room.userRoom);">查询</div>
+        </div>
+        <div class="form-item">
+            <label class="form-key">房型:</label>
+            <input class="form-value" type="text" ng-model="room.curRoom.unit"/>
+        </div>
+    </form>
+    <table class="pl-table">
+        <tbody>
+        <tr class="title-tr">
+            <td class="w5">源数据Id</td><td class="w6">酒店名称</td><td class="w6">类型</td><td class="w6">新房间号</td>
+            <td class="w8">旧房间号</td><td class="w10">操作时间</td><td class="w6">错误信息</td>
+        </tr>
+        <tr ng-repeat="item in static.pushList">
+            <td ng-bind="item.roomNum"></td><td ng-bind="item.houseType"></td><td ng-bind="item.unit"></td>
+            <td ng-bind="item.floor"></td><td ng-bind="item.ip"></td><td ng-bind="item.rcuIp"></td><td ng-bind="item.wifi"></td>
+            <td ng-bind="item.tvCode"></td>
+        </tr>
+        </tbody>
+    </table>
+    <paging-bar page-action="static.getPushList(param);" total-page="static.totalPage"></paging-bar>
+</div>

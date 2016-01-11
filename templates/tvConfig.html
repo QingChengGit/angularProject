@@ -1,0 +1,50 @@
+<div class="tv-conf" ng-if="!main.isSuper">
+    <title-bar title-name="电视信息配置" show-search="false"></title-bar>
+    <form name="tvForm" class="pl-form tv-form">
+        <div class="form-item">
+            <label class="form-key">电视型号:</label>
+            <input class="form-value" name="tvModel" type="text" ng-model="tv.curConf.tvModel" required/>
+            <span class="valid-msg" ng-show="tv.isSubmit && tvForm.tvModel.$invalid">请输入电视型号</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">信号输入源:</label>
+            <select class="search-select" name="signalSource" ng-model="tv.curConf.signalSource" required
+                    ng-options="s.name as s.nameCn for s in tv.signalList">
+            </select>
+            <span class="valid-msg" ng-show="tv.isSubmit && tvForm.signalSource.$invalid">请选择信号输入源</span>
+        </div>
+        <div class="form-item">
+            <label class="form-value upload1">
+                <upload server-path="tv.uploadPath" context=".upload1" uploader="tv.uploader1"
+                          preview-img="tv.curConf.logoImg" preview-title="LOGO图片"></upload>
+            </label>
+            <label class="form-value upload2">
+                <upload server-path="tv.uploadPath" context=".upload2" uploader="tv.uploader2"
+                        preview-img="tv.curConf.homeImg" preview-title="首页图片"></upload>
+            </label>
+        </div>
+        <div class="form-item">
+            <label class="form-value upload3">
+                <upload server-path="tv.uploadPath" context=".upload3" uploader="tv.uploader3"
+                        preview-img="tv.curConf.welcomeImg" preview-title="欢迎图片"></upload>
+            </label>
+            <label class="form-value upload4">
+                <upload server-path="tv.uploadPath" context=".upload4" uploader="tv.uploader4"
+                        preview-img="tv.curConf.helpImg" preview-title="帮助图片"></upload>
+            </label>
+        </div>
+        <div class="form-item">
+            <label class="form-value upload5">
+                <upload server-path="tv.uploadPath" context=".upload5" uploader="tv.uploader5"
+                        preview-img="tv.curConf.solganCn" preview-title="酒店中文口号"></upload>
+            </label>
+            <label class="form-value upload6">
+                <upload server-path="tv.uploadPath" context=".upload6" uploader="tv.uploader6"
+                        preview-img="tv.curConf.solgan" preview-title="酒店英文口号"></upload>
+            </label>
+        </div>
+        <div class="operate-btn-area">
+            <div class="operate-btn blue-btn" ng-click="tv.upload(tvForm.$valid);">确定</div>
+        </div>
+    </form>
+</div>

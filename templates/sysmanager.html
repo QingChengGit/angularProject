@@ -1,0 +1,75 @@
+<div class="sys" ng-if="!sys.isEdit && main.isHigherSuper">
+    <title-bar title-name="系统字典管理" show-search="false"></title-bar>
+    <a class="back-btn link-btn" ng-if="sys.isShowDetail" ng-click="sys.backSummary();">返回</a>
+    <table class="pl-table" tip>
+        <tbody>
+        <tr class="title-tr">
+            <td class="w5">序号</td><td class="w8">唯一名</td><td class="w20">中文名</td><td class="w20">英文名</td>
+            <td>备注</td><td class="w8">发布值</td><td class="w20">拓展信息</td><td class="w10">操作</td>
+        </tr>
+        <tr ng-repeat="item in (!sys.isShowDetail ? sys.dictList : sys.dictDetailList)">
+            <td class="w5" ng-bind="$index+1"></td><td class="w10" ng-bind="item.name"></td><td ng-bind="item.nameCn"></td>
+            <td ng-bind="item.nameEn"></td><td ng-bind="item.remark"></td><td ng-bind="item.valueCn"></td>
+            <td ng-bind="item.extInfo"></td>
+            <td class="operate-btn">
+                <a class="link-btn" ng-if="!sys.isShowDetail" ng-click="sys.showDetail(item);">详细</a>
+                <a class="link-btn" ng-click="sys.editDict(item);">编辑</a>
+                <a class="link-btn" ng-click="sys.deleteDict(item);">删除</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <paging-bar page-action="sys.getDictList(param);" paging-param="sys.pagingParam" total-page="sys.totalPage"
+                is-show-add-btn="true" add-list-item="sys.goAddDict();"></paging-bar>
+</div>
+<div class="sys" ng-if="sys.isEdit && main.isHigherSuper">
+    <title-bar title-name="添加系统字典信息" ng-if="sys.isAdd" show-search="false"></title-bar>
+    <title-bar title-name="修改系统字典信息" ng-if="!sys.isAdd" show-search="false"></title-bar>
+    <form name="sysForm" class="pl-form sys-form">
+        <div class="form-item">
+            <label class="form-key">唯一名:</label>
+            <label class="form-value" ng-bind="sys.curDict.name" ng-if="!sys.isAdd"></label>
+            <input class="form-value" name="name" type="text" ng-model="sys.curDict.name" ng-if="sys.isAdd" required/>
+            <span class="valid-msg" ng-if="sys.isAdd" ng-show="sys.isSubmit && sysForm.name.$invalid">请输入唯一名</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">中文名:</label>
+            <input class="form-value" name="nameCn" type="text" ng-model="sys.curDict.nameCn"
+                   ng-pattern="/^(?:[\u4e00-\u9fa5]|\s)*[\u4e00-\u9fa5]+(?:[\u4e00-\u9fa5]|\s)*$/" required/>
+            <span class="valid-msg" ng-show="sys.isSubmit && sysForm.nameCn.$invalid">请输入正确的中文名称</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">英文名:</label>
+            <input class="form-value" name="nameEn" type="text" ng-model="sys.curDict.nameEn"
+                   ng-pattern="/^([a-zA-Z]|\s)*[a-zA-Z]+([a-zA-Z]|\s)*$/" required/>
+            <span class="valid-msg" ng-show="sys.isSubmit && sysForm.nameEn.$invalid">请输入正确的英文名称</span>
+        </div>
+        <!--<div class="form-item">
+            <label class="form-key">顺序号:</label>
+            <input class="form-value" name="orderNum" type="text" ng-model="sys.curDict.orderNum" ng-pattern="/^\d+$/" required/>
+            <span class="valid-msg" ng-show="sys.isSubmit && sysForm.orderNum.$invalid">请输入顺序号，正整数</span>
+        </div>-->
+        <div class="form-item">
+            <label class="form-key">备注:</label>
+            <input class="form-value" type="text" ng-model="sys.curDict.remark"/>
+        </div>
+        <div class="form-item">
+            <label class="form-key">发布值:</label>
+            <select class="form-value" ng-model="sys.curDict.value">
+                <option value="notShop">非商品</option>
+                <option value="shop">商品</option>
+                <option value="log">动作日志</option>
+            </select>
+        </div>
+        <div class="form-item">
+            <label class="form-key">拓展信息:</label>
+            <input class="form-value" name="extInfo" type="text" ng-model="sys.curDict.extInfo" ng-maxlength="90"/>
+            <span class="valid-msg" ng-show="sys.isSubmit && sysForm.extInfo.$invalid">拓展信息最多90字符!</span>
+        </div>
+        <div class="operate-btn-area">
+            <div class="operate-btn blue-btn"
+                 ng-click="!sys.isAdd ? sys.updateDict(sysForm.$valid, sys.curDict) : sys.addDict(sysForm.$valid, sys.curDict)">确定</div>
+            <div class="operate-btn gray-btn" ng-click="sys.backListView();">返回</div>
+        </div>
+    </form>
+</div>

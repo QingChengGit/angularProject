@@ -1,0 +1,117 @@
+<div class="room" ng-if="room.type==='roomList'&&main.isHotel">
+    <div class="list-search-area">
+        <a class="blue-btn batch-btn" ng-href="#/room/batchAdd/545612132">批量添加房间</a>
+        <div class="import-excel" id="importExcel">导入</div>
+        <a class="blue-btn" ng-href="api/hotelRoom/exportData">导出</a>
+    </div>
+    <title-bar title-name="房间管理" show-search="false"></title-bar>
+    <table class="pl-table" tip>
+        <tbody>
+        <tr class="title-tr">
+            <td class="w5">房间编号</td><td class="w15">类型</td><td class="w5">单元楼</td><td class="w5">楼层</td>
+            <td class="w15">电视IP</td><td class="w15">RCU IP</td><td class="w10">WIFI</td>
+            <td class="w10">操作</td>
+        </tr>
+        <tr ng-repeat="item in room.roomList">
+            <td class="w5" ng-bind="item.roomNum"></td><td class="w15" ng-bind="item.roomTypeName"></td>
+            <td ng-bind="item.unit"></td><td ng-bind="item.floor"></td><td ng-bind="item.ip"></td>
+            <td ng-bind="item.rcuIp"></td><td ng-bind="item.wifi"></td>
+            <td class="operate-btn">
+                <a class="link-btn" ng-href="#/room/editRoom/{{item.id}}">编辑</a>
+                <a class="link-btn" ng-click="room.deleteRoom(item);">删除</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <paging-bar page-action="room.getRoomList(param);" total-page="room.totalPage"
+                is-show-add-btn="true" add-list-item="room.goRoom();"></paging-bar>
+</div>
+<div class="room" ng-if="room.type!=='roomList'">
+    <title-bar title-name="修改房间信息" ng-if="room.type === 'editRoom'" show-search="false"></title-bar>
+    <title-bar title-name="添加房间" ng-if="room.type === 'addRoom'" show-search="false"></title-bar>
+    <title-bar title-name="批量添加房间" ng-if="room.type === 'batchAdd'" show-search="false"></title-bar>
+    <form name="roomForm" class="pl-form room-form">
+        <div class="form-item">
+            <label class="form-key">房间类型:</label>
+            <select class="form-value" ng-model="room.curRoom.roomType" name="roomType"
+                    ng-change="room.getRCUTemplate(room.curRoom.roomType);" required
+                    ng-options="s.id.toString() as s.name for s in room.roomTypeList">
+            </select>
+            <span class="valid-msg" ng-show="room.isSubmit && roomForm.roomType.$invalid">请选择房间类型</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">所在楼:</label>
+            <input class="form-value" name="unit" type="text" ng-model="room.curRoom.unit" required/>
+            <span class="valid-msg" ng-show="room.isSubmit && roomForm.unit.$invalid">请输入所在楼号</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">所在楼层:</label>
+            <input class="form-value" name="floor" type="text" ng-model="room.curRoom.floor" required/>
+            <span class="valid-msg" ng-show="room.isSubmit && roomForm.floor.$invalid">请输入所在楼层</span>
+        </div>
+        <div class="form-item" ng-if="room.type!=='batchAdd'">
+            <label class="form-key">房间编号:</label>
+            <input class="form-value" name="roomNum" type="text" ng-blur="room.checkRoomNum(room.curRoom.roomNum);"
+                   ng-if="room.type!=='editRoom'" ng-model="room.curRoom.roomNum" ng-pattern="/^\d{1,4}$/" required/>
+            <span class="valid-msg" ng-if="room.type!=='editRoom'"
+                  ng-show="!room.isRoomNumNotRepeat">该房间编号已存在，请重新输入</span>
+            <span class="valid-msg" ng-if="room.type!=='editRoom'"
+                  ng-show="room.isSubmit && roomForm.roomNum.$invalid">请输入正确的房间编号,最多4位数字</span>
+            <label class="form-value" ng-bind="room.curRoom.roomNum" ng-if="room.type==='editRoom'"></label>
+        </div>
+        <div class="form-item" ng-if="room.type==='batchAdd'">
+            <label class="form-key">房间编号:</label>
+            <input class="form-value" name="roomNum" type="text"
+                   ng-model="room.curRoom.roomNum" ng-pattern="/^\d{1,4}$/" required/>
+            <span class="valid-msg" ng-show="room.isSubmit && roomForm.roomNum.$invalid">请输入正确的起始房间编号,最多4位数字</span>
+            <span class="text">至</span>
+            <input class="form-value" name="roomNumEnd" type="text"
+                   ng-model="room.curRoom.roomNumEnd" ng-pattern="/^\d{1,4}$/" required/>
+            <span class="valid-msg" ng-show="room.isSubmit && roomForm.roomNumEnd.$invalid">请输入正确的结束房间编号,最多4位数字</span>
+        </div>
+        <div class="form-item" ng-if="room.type!=='batchAdd'">
+            <label class="form-key">电视IP:</label>
+            <input class="form-value" type="text" ng-model="room.curRoom.ip" />
+        </div>
+        <div class="form-item" ng-if="room.type==='batchAdd'">
+            <label class="form-key">电视起始IP:</label>
+            <input class="form-value" name="ip" type="text"
+                   ng-model="room.curRoom.ip"/>
+        </div>
+        <div class="form-item">
+            <label class="form-key">WIFI密码:</label>
+            <input class="form-value" type="text" ng-model="room.curRoom.wifi" />
+        </div>
+        <div class="form-item" ng-if="room.type!=='batchAdd'">
+            <label class="form-key">RCU IP:</label>
+            <input class="form-value" type="text" ng-model="room.curRoom.rcuIp" />
+        </div>
+        <div class="form-item" ng-if="room.type==='batchAdd'">
+            <label class="form-key">RCU起始IP:</label>
+            <input class="form-value" name="rcuIp" type="text"
+                   ng-model="room.curRoom.rcuIp"/>
+        </div>
+<!--        <div class="form-item">
+            <label class="form-key">红外启用:</label>
+            <label class="form-value">
+                <input class="radio" type="radio" name="red" ng-model="room.userHotel.screen" ng-value="true"/>启用
+                <input class="radio" type="radio" name="red" ng-model="room.userHotel.screen" ng-value="false"/>关闭
+            </label>
+        </div>-->
+        <div class="rcu" ng-repeat="template in room.rcuTemplate.rcuTemplate">
+            <p class="list-title" ng-bind="template.lineTypeCn"></p>
+            <div class="add-remove-btn">
+                <a class="link-btn noselect" ng-click="room.addTemplate(template.lineType)">添加一行</a>
+                <a class="link-btn noselect" ng-click="room.removeTemplate(template.lineType)">删除一行</a>
+            </div>
+            <div class="form-item" ng-repeat="item in template.roomRCUCfgEntityJsons">
+                <label class="form-key light-mode-label">第{{$index+1}}路:</label>
+                <input class="form-value" type="text" ng-model="item.name"/>
+            </div>
+        </div>
+        <div class="operate-btn-area">
+            <div class="operate-btn blue-btn" ng-click="room.updateRoom(roomForm.$valid, room.curRoom, room.rcuTemplate);">确定</div>
+            <div class="operate-btn gray-btn" ng-click="room.backListView();">返回</div>
+        </div>
+    </form>
+</div>

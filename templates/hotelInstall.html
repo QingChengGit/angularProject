@@ -1,0 +1,40 @@
+<div class="sys" ng-if="!sys.isEdit && main.isSuper">
+    <div class="list-search-area">
+        <select class="search-select" ng-model="sys.hotelName" ng-change="sys.getInstallListBySearch();"
+                ng-options="s.id.toString() as s.nameCn for s in sys.brandList">
+            <option value="" selected="selected">全部品牌</option>
+        </select>
+        <select class="search-select" ng-model="sys.pkgType" ng-change="sys.getInstallListBySearch();"
+                ng-options="s.name as s.nameCn for s in sys.pkgTypes">
+            <option value="" selected="selected">全部程序类型</option>
+        </select>
+        <select class="search-select" ng-model="sys.isOnline" ng-change="sys.getInstallListBySearch();">
+            <option value="" selected="selected">全部在线状态</option>
+            <option value="1" selected="selected">在线</option>
+            <option value="0" selected="selected">不在线</option>
+        </select>
+    </div>
+    <title-bar title-name="酒店安装管理" show-search="true" search-place-holder="输入酒店名称、具体地址"
+               search-handler="sys.getInstallListBySearch(content);"></title-bar>
+    <table class="pl-table" tip>
+        <tbody>
+        <tr class="title-tr">
+            <td class="w5">序号</td><td class="w10">酒店品牌</td><td class="w20">店名</td>
+            <td class="w20">地址</td><td class="w8">当前版本</td><td class="w8">最新版本</td><td class="w8">程序类型</td>
+            <td class="w5">是否在线</td><td class="w8">操作</td>
+        </tr>
+        <tr ng-repeat="item in sys.installList">
+            <td class="w5" ng-bind="$index+1"></td><td class="w10" ng-bind="item.nameCn"></td>
+            <td ng-bind="item.subName"></td>
+            <td ng-bind="item.address"></td><td ng-bind="item.curVersion"></td>
+            <td ng-bind="item.lastVersion"></td><td ng-bind="item.pkgType"></td>
+            <td ng-bind="item.online"></td>
+            <td class="operate-btn">
+                <a class="link-btn" ng-if="item.online == '是'" ng-click="sys.upgrade(item.link);">强制升级</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <paging-bar page-action="sys.getInstallList(param);" paging-param="sys.pagingParam"
+                page-num="sys.pageNum" total-page="sys.totalPage"></paging-bar>
+</div>

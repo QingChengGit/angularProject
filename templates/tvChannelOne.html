@@ -1,0 +1,69 @@
+<div class="tvChannel" ng-if="!main.isSuper && !tv.isEdit">
+    <title-bar title-name="频道管理" show-search="false"></title-bar>
+    <table class="pl-table">
+        <tbody>
+        <tr class="title-tr">
+            <td class="w10">序号</td><td class="w20">频道名称</td><td class="w20">英文名称</td><td class="w10">频道序号</td>
+            <td class="w20">所属类型</td><td class="w15">操作</td>
+        </tr>
+        <tr ng-repeat="item in tv.channels">
+            <td class="w10" ng-bind="$index + 1"></td><td class="w20" ng-bind="item.nameCn"></td>
+            <td ng-bind="item.nameEn"></td><td ng-bind="item.orderNum"></td>
+            <td ng-bind="item.menuTypeCn"></td>
+            <td class="operate-btn">
+                <a class="link-btn" ng-click="tv.editChannel(item);">编辑</a>
+                <a class="link-btn" ng-click="tv.deleteChannel(item.id);">删除</a>
+                <a class="link-btn" ng-href="#tv/Two/{{item.id}}">查看子频道</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <paging-bar page-action="tv.getTvChannels(param);" is-show-add-btn="true" add-list-item="tv.addChannel();"
+                paging-param="tv.pagingParam" total-page="tv.totalPage"></paging-bar>
+</div>
+<div class="tvChannel" ng-if="!main.isSuper && tv.isEdit">
+    <title-bar title-name="添加频道信息" ng-if="tv.channelOperate==='add'" show-search="false"></title-bar>
+    <title-bar title-name="频道信息修改" ng-if="tv.channelOperate==='update'" show-search="false"></title-bar>
+    <form name="channelForm" class="pl-form channel-form">
+        <div class="form-item">
+            <label class="form-key">频道名称:</label>
+            <input class="form-value" name="nameCn" type="text" ng-model="tv.curChannel.nameCn" required/>
+            <span class="valid-msg" ng-show="tv.isSubmit && channelForm.nameCn.$invalid">请输入频道名称</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">英文名称:</label>
+            <input class="form-value" name="nameEn" type="text" ng-model="tv.curChannel.nameEn"
+                   ng-pattern="/^([a-zA-Z]|\s)*[a-zA-Z]+([a-zA-Z]|\s)*$/" required/>
+            <span class="valid-msg" ng-show="tv.isSubmit && channelForm.nameEn.$invalid">请输入英文名称</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">频道序号:</label>
+            <input class="form-value" name="orderNum" type="text" ng-model="tv.curChannel.orderNum"
+                   ng-pattern="/^\d{1,4}$/" required/>
+            <span class="valid-msg" ng-show="tv.isSubmit && channelForm.orderNum.$invalid">请输入正确的序号，正整数,最多4位</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">所属类型:</label>
+            <select class="form-value" name="menuType" ng-model="tv.curChannel.menuType" required>
+                <option value="NORMAL">普通</option>
+                <option value="TV" selected="">电视节目</option>
+                <option value="VODEO">VOD点播</option>
+            </select>
+            <span class="valid-msg" ng-show="tv.isSubmit && channelForm.menuType.$invalid">请选择所属类型</span>
+        </div>
+        <div class="form-item">
+            <label class="form-value channelUpload1">
+                <upload server-path="tv.uploadPath" context=".channelUpload1" uploader="tv.channelUpload1"
+                        preview-img="tv.curChannel.menuImg" preview-title="菜单图片"></upload>
+            </label>
+            <label class="form-value channelUpload2">
+                <upload server-path="tv.uploadPath" context=".channelUpload2" uploader="tv.channelUpload2"
+                        preview-img="tv.curChannel.backImg" preview-title="背景图片"></upload>
+            </label>
+        </div>
+        <div class="operate-btn-area">
+            <div class="operate-btn blue-btn" ng-click="tv.modifyChannel(channelForm.$valid, tv.curChannel);">确定</div>
+            <div class="operate-btn gray-btn" ng-click="tv.backListView();">返回</div>
+        </div>
+    </form>
+</div>

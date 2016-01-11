@@ -1,0 +1,172 @@
+<div class="hotel" ng-show="hotel.param == 'all' && main.isSuper">
+    <div class="list-search-area">
+        <select class="search-select" ng-model="hotel.conditName" ng-change="hotel.getHotelListBySearch();"
+                ng-options="s.id.toString() as s.nameCn for s in hotel.brandList">
+            <option value="" selected="selected">全部品牌</option>
+        </select>
+        <select class="search-select" ng-model="hotel.conditProv" ng-change="hotel.getHotelListBySearch();"
+                ng-options="s.id.toString() as s.name for s in hotel.provList">
+            <option value="" selected="selected">全部省份</option>
+        </select>
+    </div>
+    <title-bar title-name="酒店列表" show-search="true" search-place-holder="输入酒店名称、PMS编号、具体地址"
+               search-handler="hotel.getHotelListBySearch(content);"></title-bar>
+    <table class="pl-table" tip>
+        <tbody>
+            <tr class="title-tr">
+                <td class="w5">序号</td><td class="w8">PMS编号</td><td class="w8">酒店品牌</td><td class="w10">酒店名称</td>
+                <td class="w8">所在省份</td><td class="w8">所在市区</td><td class="w10">具体地址</td>
+                <td class="w8">前台电话</td><td class="w8">用户账号</td><td class="w8">密码</td><td class="w10">操作</td>
+            </tr>
+            <tr ng-repeat="item in hotel.hotelList">
+                <td class="w5" ng-bind="$index+1"></td><td class="w8" ng-bind="item.chainId"></td><td ng-bind="item.nameCn"></td>
+                <td ng-bind="item.subName"></td><td ng-bind="item.provinceCn"></td><td ng-bind="item.area"></td>
+                <td ng-bind="item.address"></td><td ng-bind="item.phone"></td><td ng-bind="item.userName"></td>
+                <td ng-bind="item.password"></td>
+                <td class="operate-btn">
+                    <a class="link-btn" ng-href="#hotel/hotelList/{{item.id}}">编辑</a>
+                    <a class="link-btn" ng-click="hotel.deleteHotel(item);">删除</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <paging-bar page-action="hotel.getHotelList(param);" total-page="hotel.totalPage" is-show-add-btn="true"
+                page-num="hotel.pageNum" paging-param="hotel.pagingParam"
+                add-list-item="hotel.goAddHotel();"></paging-bar>
+</div>
+<div class="hotel" ng-if="!main.isSuper || hotel.param !== 'all'">
+    <title-bar title-name="酒店信息" show-search="false"></title-bar>
+    <a class="back-btn link-btn" ng-if="main.isSuper" ng-click="hotel.goModifyInfo();">修改密码</a>
+    <form name="hotelForm" class="pl-form hotel-form" novalidate>
+        <div class="form-item">
+            <label class="form-key">用户账号:</label>
+            <input class="form-value" name="userName" type="text" ng-if="hotel.type=='add'"
+                   ng-model="hotel.userHotel.userName" required/>
+            <label class="form-value" ng-if="hotel.type!='add'" ng-bind="hotel.userHotel.userName"></label>
+            <span class="valid-msg" ng-show="hotel.isSubmit && hotelForm.userName.$invalid">请输入用户账号</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">用户密码:</label>
+            <input class="form-value" name="password" type="text" ng-if="hotel.type=='add'"
+                   ng-pattern="/^(?![0-9]+$)(?![a-zA-Z]+$)[a-zA-Z0-9]{6,20}/" ng-model="hotel.userHotel.password" required/>
+            <label class="form-value" ng-if="hotel.type!='add'" ng-bind="hotel.userHotel.password"></label>
+            <span class="valid-msg" ng-show="hotel.isSubmit && hotelForm.password.$invalid">请输入正确的密码，字母加数字至少6位,最多20位</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">PMS编号:</label>
+            <input class="form-value" name="chainId" type="text" ng-if="hotel.type=='add'" ng-model="hotel.userHotel.chainId"
+                   ng-pattern="/^\d{1,10}$/" />
+            <label class="form-value" ng-if="hotel.type!='add'" ng-bind="hotel.userHotel.chainId"></label>
+            <span class="valid-msg" ng-show="hotel.isSubmit && hotelForm.chainId.$invalid">请输入正确的PMS编号最多10位数字</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">酒店品牌:</label>
+            <select class="form-value" name="name" ng-if="hotel.type=='add'" ng-model="hotel.userHotel.name"
+                    ng-options="s.id.toString() as s.nameCn for s in hotel.brandList" required></select>
+            <label class="form-value" ng-if="hotel.type!='add'" ng-bind="hotel.userHotel.nameCn"></label>
+            <span class="valid-msg" ng-show="hotel.isSubmit && hotelForm.name.$invalid">请选择酒店品牌</span>
+        </div>
+        <!--<div class="form-item">
+            <label class="form-key">商品品牌:</label>
+            <mul-select resource-data="hotel.goodsList" selected-data="hotel.userHotel.brandId"></mul-select>
+        </div>
+        <div class="form-item">
+            <label class="form-key">服务器IP:</label>
+            <label class="form-value" ng-bind="hotel.userHotel.serviceIp"></label>
+        </div>-->
+        <div class="form-item">
+            <label class="form-key">所在城市:</label>
+            <province-bar ng-if="main.isSuper" province="hotel.province" city="hotel.city" area="hotel.area"></province-bar>
+            <label ng-if="!main.isSuper" class="form-value" ng-bind="hotel.userHotel.area"></label>
+        </div>
+        <div class="form-item">
+            <label class="form-key">酒店名称:</label>
+            <input class="form-value" ng-if="hotel.type!='editHotel'" name="subName" type="text"
+                   ng-model="hotel.userHotel.subName" required/>
+            <label class="form-value" ng-if="hotel.type=='editHotel'" ng-bind="hotel.userHotel.subName"></label>
+            <span class="valid-msg" ng-show="hotel.isSubmit && hotelForm.subName.$invalid">请输入酒店名称</span>
+        </div>
+        <!--<div class="form-item">
+            <label class="form-key">酒店类型:</label>
+            <select class="form-value hotel-type" ng-model="hotel.userHotel.type">
+                <option value="GONG_YU">公寓</option>
+                <option value="JING_JI_XING">经济型</option>
+                <option value="QING_NIAN_LV_SHE">青年旅舍</option>
+                <option value="HAO_HUA_XING">豪华型</option>
+                <option value="SHU_SHI_XING">舒适型</option>
+                <option value="ZHONG_GAO_DUAN">中高端</option>
+            </select>
+        </div>-->
+        <div class="form-item">
+            <label class="form-key">具体地址:</label>
+            <textarea class="form-value" name="address" type="text" ng-model="hotel.userHotel.address" required></textarea>
+            <span class="valid-msg" ng-show="hotel.isSubmit && hotelForm.address.$invalid">请输入具体地址</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">坐标信息:</label>
+            <div class="form-value map" id="map"></div>
+        </div>
+        <div class="form-item">
+            <label class="form-key">前台电话:</label>
+            <input class="form-value" name="phone" type="text" ng-model="hotel.userHotel.phone"  required
+                   ng-pattern="/^(?:([0-9]{3,4}-)?[0-9]{7,8})|(?:1[3|4|5|8][0-9]\d{4,8})$/"/>
+            <span class="valid-msg" ng-show="hotel.isSubmit && hotelForm.phone.$invalid">请输入正确的电话或者手机号</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">酒店传真:</label>
+            <input class="form-value" name="fax" type="text" ng-model="hotel.userHotel.fax" ng-pattern="/^\d{3,4}-\d{7,8}$/"/>
+            <span class="valid-msg" ng-show="hotel.isSubmit && hotelForm.fax.$invalid">请输入正确的传真,如:0411-39664777</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">邮编号码:</label>
+            <input class="form-value" name="postCode" type="text" ng-model="hotel.userHotel.postCode" ng-pattern="/[0-9]{6}/"/>
+            <span class="valid-msg" ng-show="hotel.isSubmit && hotelForm.postCode.$invalid">请输入正确的邮编,如:116000</span>
+        </div>
+        <div ng-if="!main.isSuper">
+        <div class="form-item">
+            <label class="form-key">公交路线:</label>
+            <textarea class="form-value" type="text" ng-model="hotel.userHotel.bus"></textarea>
+        </div>
+        <div class="form-item">
+            <label class="form-key">周边环境:</label>
+            <textarea class="form-value" type="text" ng-model="hotel.userHotel.env"></textarea>
+        </div>
+        <div class="form-item">
+            <label class="form-key">中文欢迎语:</label>
+            <textarea class="form-value" type="text" ng-model="hotel.userHotel.welcomesCn"></textarea>
+        </div>
+        <div class="form-item">
+            <label class="form-key">英文欢迎语:</label>
+            <textarea class="form-value" type="text" ng-model="hotel.userHotel.welcomesEn"></textarea>
+        </div>
+        <div class="form-item">
+            <label class="form-key">中文滚动:</label>
+            <textarea class="form-value" type="text" ng-model="hotel.userHotel.rollCn"></textarea>
+        </div>
+        <div class="form-item">
+            <label class="form-key">英文滚动:</label>
+            <textarea class="form-value" type="text" ng-model="hotel.userHotel.rollEn"></textarea>
+        </div>
+        <!--<div class="form-item">
+            <label class="form-key">天气编码:</label>
+            <input class="form-value" type="text" ng-model="hotel.userHotel.weatherCode" />
+        </div>-->
+        <div class="form-item">
+            <label class="form-key">英文城市名:</label>
+            <input class="form-value" name="cityNameEn" type="text" ng-model="hotel.userHotel.cityNameEn" ng-pattern="/^([a-zA-Z]|\s)*[a-zA-Z]+([a-zA-Z]|\s)*$/"/>
+            <span class="valid-msg" ng-show="hotel.isSubmit && hotelForm.cityNameEn.$invalid">请输入英文</span>
+        </div>
+        </div>
+        <!--<div class="form-item">
+            <label class="form-key">屏幕控制:</label>
+            <label class="form-value">
+                <input class="radio" type="radio" name="screen" ng-model="hotel.userHotel.screen" ng-value="true"/>是
+                <input class="radio" type="radio" name="screen" ng-model="hotel.userHotel.screen" ng-value="false"/>否(电视配置帮助页面是否显示)
+            </label>
+        </div>-->
+        <div class="operate-btn-area">
+            <div class="operate-btn blue-btn" ng-click="hotel.updateHotel(hotelForm.$valid, hotel.userHotel);">确定</div>
+            <div class="operate-btn gray-btn" ng-if="main.isSuper" ng-click="hotel.backListView();">返回</div>
+        </div>
+    </form>
+</div>

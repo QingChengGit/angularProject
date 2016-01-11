@@ -1,0 +1,225 @@
+/********************* 表格列表组件样式 **********************/
+.pl-table{
+    width: 100%;
+    font-size: 14px;
+    border-collapse: collapse;
+    color: #3a3a3a;
+    background-color: #eeeff4;
+    table-layout: fixed;
+    td{
+        padding: 15px 5px;
+        text-align: center;
+        border: 1px solid #dadfea;
+        -ms-word-wrap: break-word;
+        word-wrap: break-word;
+        .ellipsis;
+        cursor: default;
+    }
+    .title-tr{
+        height: 50px;
+        font-size: 14px;
+        color: #78829d;
+        background-color: #dadfea;
+    }
+    .title-tr td{
+        border-bottom: none;
+    }
+    .link-btn{
+        font-size: 14px;
+        color: #1d74af;
+        cursor: pointer;
+    }
+    .operate-btn{
+        font-size: 0;
+    }
+    .link-btn{
+        margin-right: 15px;
+    }
+    .link-btn:last-child{
+        margin-right: 0;
+    }
+    .w5{
+        width: 5%;
+    }
+    .w8{
+        width: 8%;
+    }
+    .w10{
+        width: 10%;
+    }
+    .w15{
+        width: 15%;
+    }
+    .w20{
+        width: 20%;
+    }
+    .w30{
+        width: 30%;
+    }
+}
+/********************* 表单组件样式 **********************/
+.pl-form{
+    .form-item{
+        line-height: 40px;
+        margin: 10px 20px;
+        font-size: 0;
+    }
+    .form-key, .form-value{
+        display: inline-block;
+        vertical-align: middle;
+        font-size: 14px;
+        color: #3a3a3a;
+    }
+    .form-value{
+        margin-right: 15px;
+    }
+    .form-key{
+        width: 100px;
+        line-height: normal;
+    }
+    .valid-msg{
+        margin-left: 10px;
+        font-size: 15px;
+        color: red;
+        vertical-align: middle;
+    }
+    input, select, textarea{
+        width: 320px;
+    }
+    input[type="file"]{
+        width: inherit;
+    }
+    select{
+        height: 40px;
+        border: 1px solid #dadfea;
+    }
+    textarea{
+        height: 80px;
+    }
+    .radio{
+        width: 30px;
+    }
+    .list-title{
+        margin: 10px 20px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    .operate-btn-area{
+        margin: 15px 0;
+        font-size: 0;
+        text-align: center;
+    }
+    .operate-btn{
+        display: inline-block;
+        font-size: 15px;
+        margin-left: 15px;
+    }
+}
+/******************** 页面上条件搜索区域样式 ****************************/
+.list-search-area{
+    position: absolute;
+    top: 15px;
+    left: 150px;
+    z-index: 1;
+    .search-select{
+        display: inline-block;
+        width: 160px;
+        height: 40px;
+        margin-left: 20px;
+        border: 1px solid #dadfea;
+        vertical-align: middle;
+        font-size: 14px;
+        color: #737373;
+    }
+    .condition-text{
+        display: inline-block;
+        width: 100px;
+        line-height: normal;
+        vertical-align: middle;
+        font-size: 14px;
+        color: #3a3a3a;
+    }
+}
+/******************** 页面内容区上面的标题区域组件样式 ******************/
+.title-bar{
+    position: relative;
+    height: 70px;
+    line-height: 70px;
+    padding-left: 40px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #3a3a3a;
+    background-color: #eeeff4;
+    .search-area{
+        position: absolute;
+        top: 0;
+        right: 40px;
+        font-size: 0;
+    }
+    .search-input, .search-btn{
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .search-input{
+        width: 250px;
+        margin-right: 10px;
+        font-size: 14px;
+    }
+}
+
+/******************** 文件上传组件样式 ******************/
+.uploader-container{
+    width: 300px;
+    border: 1px solid #00b7ee;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    text-align: center;
+    .uploader-list{
+        width: 300px;
+        height: 225px;
+    }
+    img{
+        width: 300px;
+        height: 200px;
+        border: 0;
+    }
+    .preview-title{
+        height: 25px;
+        line-height: 25px;
+        font-size: 16px;
+        text-align: center;
+        color: #fff;
+        background-color: #00b7ee;
+    }
+    .select-btn{
+        display: inline-block;
+        vertical-align: top;
+        line-height: normal;
+        font-size: 16px;
+    }
+    .remove-btn{
+        display: inline-block;
+        vertical-align: top;
+        width: 64px;
+        height: 21px;
+        margin-left: 15px;
+        line-height: normal;
+        font-size: 16px;
+        cursor: pointer;
+        background: red;
+        padding: 10px 15px;
+        color: #fff;
+        text-align: center;
+        border-radius: 3px;
+        overflow: hidden;
+    }
+}
+.back-btn{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 14px;
+    color: #1d74af;
+    cursor: pointer;
+}

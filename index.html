@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head lang="cn">
+    <meta charset="UTF-8">
+    <title>屏联科技智能酒店管理后台</title>
+    <!-- @ifdef DEBUG -->
+    <link rel="stylesheet/less" href="styles/main.less" />
+    <script>less = {env: "development"}</script>
+    <!-- @endif -->
+    <!-- build:css styles/styles.css -->
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/webuploader.css" />
+    <!-- endbuild -->
+</head>
+<body ng-app="app" ng-controller="indexCtrl as main">
+    <div class="main-wrap">
+        <div class="header">
+            <img src="images/logo.png" class="icon-logo" />
+            <p class="header-title">屏联科技智能酒店管理后台</p>
+            <div class="user-info">
+                <label class="user-name" ng-bind="main.curUserName"></label>
+                <div class="logout-btn" ng-click="main.loginOut();">退出</div>
+            </div>
+        </div>
+        <div class="main-container clearfix">
+            <div class="menu-area" select-link>
+                <div class="blue-btn publish-btn" ng-if="main.isHotel" ng-click="main.publish();">发布</div>
+                <p class="cur-version" ng-if="!main.isSuper" ng-bind="'当前版本号:'+main.curVersion"></p>
+                <ul class="menu-ul">
+                    <li class="menu-item pointer noselect" ng-repeat="menu in main.menus" ng-if="menu.parentId < 0">
+                        <p class="parent-item-name" ng-bind="menu.nameCn" hide-next-all></p>
+                        <ul class="second-menu" ng-init="children = main.getChildMenuList(menu);">
+                            <li class="child-menu-item" ng-repeat="child in children">
+                                <p class="second-item-name" ng-if="!child.target" ng-bind="child.nameCn" hide-next-all></p>
+                                <ul class="second-menu" ng-if="!child.target" ng-init="thirdChildren = main.getChildMenuList(child);">
+                                    <li class="child-menu-item" ng-repeat="third in thirdChildren">
+                                        <a class="menu-link" ng-if="third.target" ng-bind="third.nameCn" ng-href="{{third.target}}"></a>
+                                    </li>
+                                </ul>
+                                <a class="menu-link" ng-if="child.target" ng-bind="child.nameCn" ng-href="{{child.target}}"></a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-area" ng-view></div>
+        </div>
+        <div class="footer">
+            <p class="footer-content" ng-bind="'北京屏联科技有限公司 &copy;2008-'+main.curYear+' 版权所有'"></p>
+        </div>
+        <div class="mask-layer"><div class="mask-rotate"></div></div>
+    </div>
+    <script type="text/javascript">
+        // load angularjs specific version
+        var angularVersion = window.location.hash.substring(1);
+        if (angularVersion.indexOf('/') == 0) angularVersion = angularVersion.substring(1);
+    </script>
+    <!-- @ifdef DEBUG -->
+    <script src="js/libs/less.min.js"></script>
+    <!-- @endif -->
+    <!-- build:js js/vendor.js -->
+    <script src="js/libs/jquery-1.9.1.min.js"></script>
+    <script src="js/libs/angular.min.js"></script>
+    <script src="js/libs/angular-route.min.js"></script>
+    <script src="js/common/locationData.js"></script>
+    <script src="js/libs/webuploader.min.js"></script>
+    <script src="js/libs/calendar.js"></script>
+    <!-- endbuild -->
+    <script type="text/javascript" src="http://api.map.baidu.com/api?key=&v=1.0&services=true"></script>
+    <!-- build:js js/main.js -->
+    <script src="js/main.js"></script>
+    <script src="js/common/postIntercept.js"></script>
+    <script src="js/modules/index/indexService.js"></script>
+    <script src="js/modules/index/indexCtrl.js"></script>
+    <script src="js/modules/index/indexDirective.js"></script>
+    <script src="js/common/titleBarDirective.js"></script>
+    <script src="js/common/pagingDirective.js"></script>
+    <script src="js/common/provinceDirective.js"></script>
+    <script src="js/common/multSelectDirective.js"></script>
+    <script src="js/common/uploaderDirective.js"></script>
+    <script src="js/common/tipDirective.js"></script>
+    <script src="js/common/commService.js"></script>
+    <script src="js/common/dialogService.js"></script>
+    <script src="js/modules/hotels/hotelService.js"></script>
+    <script src="js/modules/hotels/hotelCtrl.js"></script>
+    <script src="js/modules/users/userService.js"></script>
+    <script src="js/modules/users/userCtrl.js"></script>
+    <script src="js/modules/telvision/telvisionService.js"></script>
+    <script src="js/modules/telvision/telvisionCtrl.js"></script>
+    <script src="js/modules/room/roomService.js"></script>
+    <script src="js/modules/room/roomCtrl.js"></script>
+    <script src="js/modules/rcu/rcuService.js"></script>
+    <script src="js/modules/rcu/rcuCtrl.js"></script>
+    <script src="js/modules/managesys/managesysService.js"></script>
+    <script src="js/modules/managesys/managesysCtrl.js"></script>
+    <script src="js/modules/sysmanager/sysmanageService.js"></script>
+    <script src="js/modules/sysmanager/sysmanageCtrl.js"></script>
+    <script src="js/modules/tv/tvService.js"></script>
+    <script src="js/modules/tv/tvCtrl.js"></script>
+    <script src="js/modules/publish/publishService.js"></script>
+    <script src="js/modules/publish/publishCtrl.js"></script>
+    <script src="js/modules/menu/menuService.js"></script>
+    <script src="js/modules/menu/menuCtrl.js"></script>
+    <script src="js/modules/monitor/monitorService.js"></script>
+    <script src="js/modules/monitor/monitorCtrl.js"></script>
+    <script src="js/modules/roomtype/roomTypeService.js"></script>
+    <script src="js/modules/roomtype/roomTypeCtrl.js"></script>
+    <script src="js/modules/static/staticService.js"></script>
+    <script src="js/modules/static/staticCtrl.js"></script>
+    <!-- endbuild -->
+</body>
+</html>

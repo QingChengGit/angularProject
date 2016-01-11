@@ -1,0 +1,45 @@
+<div class="static">
+    <title-bar title-name="入住信息查询" show-search="false"></title-bar>
+    <div class="list-search-area">
+        <label ng-if="main.isSuper">
+            <label class="condition-text">酒店名称：</label><input type="text" ng-model="static.hotelName" />
+        </label>
+        <label class="condition-text">查询时间：</label>
+            <input type="text" onclick="SelectDate(this,'yyyy-MM-dd hh:mm:ss')" ng-readonly="true" class="startTime" />
+        <label class="condition-text">至：</label>
+            <input type="text" onclick="SelectDate(this,'yyyy-MM-dd hh:mm:ss')" ng-readonly="true" class="endTime" />
+        <label class="condition-text">姓名：</label><input type="text" ng-model="static.guestName" /><br/>
+        <label class="condition-text">年龄：</label><input type="text" ng-model="static.age" />
+        <label class="condition-text">房型：</label>
+        <select class="search-select" ng-model="static.roomType" ng-change="static.getListBySearch();"
+                ng-options="s for s in static.roomTypeList">
+            <option value="" selected="selected">不限</option>
+        </select>
+        <label class="condition-text">性别：</label>
+        <select class="search-select" name="sex" ng-model="static.sex" ng-change="static.getListBySearch();">
+            <option value="">不限</option>
+            <option value="男">男</option>
+            <option value="女">女</option>
+        </select>
+        <div class="blue-btn search-btn" ng-click="static.getListBySearch();">查询</div>
+        <a class="blue-btn search-btn" ng-href="api/pmsInfo/exportData">导出</a>
+    </div>
+    <table class="pl-table" tip>
+        <tbody>
+        <tr class="title-tr">
+            <td class="w5">序号</td>
+            <td class="w15">酒店名称</td><td class="w10">姓名</td><td class="w5">性别</td><td class="w5">年龄</td>
+            <td class="w10">手机号</td><td class="w15">入住时间</td><td class="w10">房间号</td><td class="w10">房型</td>
+            <td class="w15">退房时间</td>
+        </tr>
+        <tr ng-repeat="item in static.houseList">
+            <td class="w5" ng-bind="$index+1"><td ng-bind="item.hotelName"></td><td ng-bind="item.guestName"></td>
+            <td ng-bind="item.sex"></td><td ng-bind="item.age"></td><td ng-bind="item.mobile"></td>
+            <td ng-bind="item.checkInTime"></td><td ng-bind="item.roomNum"></td>
+            <td ng-bind="item.roomType"></td><td ng-bind="item.checkOutTime"></td>
+        </tr>
+        </tbody>
+    </table>
+    <paging-bar page-action="static.getHouseList(param);" page-num="static.pageNum" total-page="static.totalPage"
+                paging-param="static.pagingParam"></paging-bar>
+</div>

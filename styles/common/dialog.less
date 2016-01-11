@@ -1,0 +1,56 @@
+.pl-dialog{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 3;
+    min-height: 250px;
+    border-width: 1px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    background-color: #fff;
+    .dialog-title{
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 600;
+        color: #ffffff;
+        background-color: dimgrey;
+    }
+    .dialog-btns{
+        margin: 15px auto;
+        text-align: center;
+    }
+    .dialog-ok-btn, .dialog-cancel-btn{
+        display: inline-block;
+        width: 80px;
+        height: 35px;
+        line-height: 35px;
+        margin-left: 15px;
+        font-size: 15px;
+        vertical-align: middle;
+        border-width: 1px;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        cursor: pointer;
+        color: white;
+    }
+    .dialog-ok-btn{
+        background-color: #1d74af;
+    }
+    .dialog-cancel-btn{
+        background-color: #5f5f5f;
+    }
+}
+.dialog-mask{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    background-color: dimgray;
+    opacity: 0.5
+}

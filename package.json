@@ -1,0 +1,27 @@
+{
+  "name": "plcs-static",
+  "version": "0.0.0",
+  "description": "projeect package.json",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-angular-templates": "^0.5.7",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-copy": "^0.8.0",
+    "grunt-contrib-cssmin": "^0.12.3",
+    "grunt-contrib-less": "^1.0.1",
+    "grunt-contrib-uglify": "^0.9.1",
+    "grunt-filerev": "^2.3.1",
+    "grunt-preprocess": "^4.2.0",
+    "grunt-rev": "^0.1.0",
+    "grunt-spritesmith": "^4.7.1",
+    "grunt-usemin": "^3.0.0",
+    "load-grunt-tasks": "^3.1.0"
+  }
+}

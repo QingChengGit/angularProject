@@ -1,0 +1,115 @@
+<div class="hotel" ng-if="!user.isEdit && user.type === 'userList'">
+    <title-bar title-name="用户管理" show-search="true"></title-bar>
+    <table class="pl-table">
+        <tbody>
+        <tr class="title-tr">
+            <td class="w5">序号</td><td class="w5">ID号</td><td class="w10">用户名</td><td class="w8">部门</td>
+            <td class="w20">店名</td><td class="w8">密码</td><td class="w10">电视锁定时间</td>
+            <td class="w8">电视锁定百分比</td><td class="w10">修改时间</td><td class="w10">操作</td>
+        </tr>
+        <tr ng-repeat="item in user.userList">
+            <td ng-bind="$index + 1"></td><td ng-bind="item.id"></td><td ng-bind="item.userName"></td><td ng-bind="item.userTypeCn"></td>
+            <td ng-bind="item.realName"></td><td ng-bind="item.password"></td><td ng-bind="item.tvLockTime"></td><td ng-bind="item.tvLockPercent"></td>
+            <td ng-bind="item.modifyTime"></td>
+            <td class="operate-btn">
+                <a class="link-btn" ng-click="user.editUser(item);">编辑</a>
+                <a class="link-btn" ng-if="item.userName !=='admin'" ng-click="user.deleteUser(item);">删除</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <paging-bar page-action="user.getUserList(param);" total-page="user.totalPage"></paging-bar>
+</div>
+<div class="user" ng-if="user.isEdit || user.type === 'addUser'">
+    <title-bar title-name="添加用户信息" ng-if="user.type === 'addUser'" show-search="false"></title-bar>
+    <title-bar title-name="用户信息修改" ng-if="user.type !== 'addUser'"show-search="false"></title-bar>
+    <form name="userForm" class="pl-form user-form">
+        <div class="form-item">
+            <label class="form-key">用户名称:</label>
+            <label class="form-value" ng-if="user.type !== 'addUser'" ng-bind="user.userInfo.userName"></label>
+            <input class="form-value" ng-if="user.type === 'addUser'" type="text" ng-model="user.userInfo.userName"/>
+        </div>
+        <div class="form-item">
+            <label class="form-key">用户姓名:</label>
+            <input class="form-value" name="realName" type="text" ng-model="user.userInfo.realName" required/>
+            <span class="valid-msg" ng-show="user.isSubmit && userForm.realName.$invalid">请输入用户姓名</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">用户密码:</label>
+            <input class="form-value" name="password" type="text" ng-model="user.userInfo.password" ng-pattern="/^(?![0-9]+$)(?![a-zA-Z]+$)[a-zA-Z0-9]{6,}/" required/>
+            <span class="valid-msg" ng-show="user.isSubmit && userForm.password.$invalid">请输入正确的密码，字母加数字至少6位</span>
+        </div>
+        <div class="form-item">
+            <label class="form-key">选择分组:</label>
+            <select class="form-value" ng-if="!user.isEdit" ng-model="user.userInfo.userType">
+                <option value="HOTEL">酒店管理</option>
+                <option value="ADMIN">云管理</option>
+            </select>
+            <label class="form-value" ng-if="user.isEdit" ng-bind="user.userInfo.userType == 'ADMIN'?'云管理':'酒店管理'"></label>
+        </div>
+        <div ng-if="user.userInfo.userType !== 'ADMIN'">
+            <div class="form-item">
+                <label class="form-key">酒店品牌:</label>
+                <select class="form-value" ng-model="user.userInfo.name" ng-options="s.id.toString() as s.nameCn for s in user.brandList"></select>
+            </div>
+            <div class="form-item">
+                <label class="form-key">影片通用组:</label>
+                <select class="form-value" ng-model="user.userInfo.groupId"
+                        ng-options="s.id.toString() as s.groupName for s in user.commGroupList"></select>
+            </div>
+            <div class="form-item">
+                <label class="form-key">所在城市:</label>
+                <province-bar province="user.province" city="user.city" area="user.area"></province-bar>
+            </div>
+            <div class="form-item">
+                <label class="form-key">酒店编号:</label>
+                <input class="form-value" name="hotelNum" type="text" ng-model="user.userInfo.hotelNum" ng-pattern="/^\d{3,255}$/" required/>
+                <span class="valid-msg" ng-show="user.isSubmit && userForm.hotelNum.$invalid">请输入正确的编号，3-255位数字</span>
+            </div>
+            <div class="form-item">
+                <label class="form-key">酒店原编号:</label>
+                <input class="form-value" type="text" ng-model="user.userInfo.chainId" />
+            </div>
+            <div class="form-item">
+                <label class="form-key">服务器外网IP:</label>
+                <input class="form-value" type="text" ng-model="user.userInfo.serviceIp" />
+            </div>
+            <div class="form-item select-goods">
+                <label class="form-key">商品品牌:</label>
+                <mul-select resource-data="user.goodsList" selected-data="user.userInfo.brandId"></mul-select>
+            </div>
+            <div class="form-item">
+                <label class="form-key">电视:</label>
+                <label class="form-value">
+                    <input class="radio" type="radio" name="tv" ng-model="user.userInfo.needTv" ng-value="true"/>启用
+                    <input class="radio" type="radio" name="tv" ng-model="user.userInfo.needTv" ng-value="false"/>关闭
+                </label>
+            </div>
+            <div class="form-item">
+                <label class="form-key">RCU:</label>
+                <label class="form-value">
+                    <input class="radio" type="radio" name="rcu" ng-model="user.userInfo.needRcu" ng-value="true"/>启用
+                    <input class="radio" type="radio" name="rcu" ng-model="user.userInfo.needRcu" ng-value="false"/>关闭
+                </label>
+            </div>
+            <div class="form-item">
+                <label class="form-key">电视锁定时间:</label>
+                <input class="form-value" type="text" placeholder="比如 2015-10-13" name="tvLockTime"
+                       ng-model="user.userInfo.tvLockTime" ng-pattern="/^2\d{3}-\d{2}-\d{2}$/"/>
+                <span class="valid-msg" ng-show="user.isSubmit && userForm.tvLockTime.$invalid">请输入正确的时间!</span>
+            </div>
+            <div class="form-item">
+                <label class="form-key">电视锁定百分比:</label>
+                <select class="form-value" ng-model="user.userInfo.tvLockPercent">
+                    <option value="0.1">10%</option>
+                    <option value="0.5">一半</option>
+                    <option value="1">全部</option>
+                </select>
+            </div>
+        </div>
+        <div class="operate-btn-area">
+            <div class="operate-btn blue-btn" ng-click="user.updateUser(userForm.$valid, user.userInfo);">确定</div>
+            <div class="operate-btn gray-btn" ng-click="user.backListView();">返回</div>
+        </div>
+    </form>
+</div>

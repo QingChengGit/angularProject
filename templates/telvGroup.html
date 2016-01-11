@@ -1,0 +1,68 @@
+<div class="telv-group" ng-if="!telv.isEdit && main.isSuper">
+    <title-bar title-name="影视片组管理" show-search="false"></title-bar>
+    <table class="pl-table">
+        <tbody>
+        <tr class="title-tr">
+            <td class="w5">序号</td><td class="w20">组名</td><td class="w10">分组类别</td>
+            <td class="w10">操作</td>
+        </tr>
+        <tr ng-repeat="item in telv.groupList">
+            <td ng-bind="$index + 1"></td></td><td ng-bind="item.groupName"></td>
+            <td ng-bind="item.groupType ? '自定义':'通用组'"></td>
+            <td class="operate-btn">
+                <a class="link-btn" ng-click="telv.getGroupMovies(item);">管理电影</a>
+                <a class="link-btn" ng-click="telv.goUpdateGroup(item);">编辑</a>
+                <a class="link-btn" ng-click="telv.deleteGroup(item.id);">删除</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <paging-bar page-action="telv.getGroups(param);" total-page="telv.totalPage"
+                is-show-add-btn="true" add-list-item="telv.goAddGroup();"></paging-bar>
+</div>
+<form name="telvForm" class="pl-form" ng-if="telv.isEditGroup && main.isSuper" novalidate>
+    <div class="form-item">
+        <label class="form-key">组名:</label>
+        <input class="form-value" name="groupName" type="text" ng-model="telv.curGroup.groupName" required/>
+        <span class="valid-msg" ng-show="telv.isSubmit && telvForm.groupName.$invalid">请输入组名</span>
+    </div>
+    <div class="form-item">
+        <label class="form-key">分组类别:</label>
+        <select class="form-value" ng-model="telv.curGroup.groupTypeAlis"
+                ng-disabled="telv.operateGroup === 'update'" required>
+            <option value="0">通用组</option>
+            <option value="1">自定义组</option>
+        </select>
+    </div>
+    <div class="form-item" ng-if="telv.curGroup.groupTypeAlis == 1">
+        <label class="form-key">选择酒店:</label>
+        <select class="form-value" name="hotel" ng-model="telv.curGroup.hotelId"
+                ng-options="s.id.toString() as s.subName for s in telv.hotelList" required>
+        </select>
+        <span class="valid-msg" ng-show="telv.isSubmit && telvForm.hotel.$invalid">请输入组名</span>
+    </div>
+    <div class="operate-btn-area">
+        <button class="operate-btn blue-btn"
+                ng-click="telv.operateGroup === 'add' ? telv.addGroup(telvForm.$valid, telv.curGroup):telv.updateGroup(telvForm.$valid, telv.curGroup);">确定</button>
+        <div class="operate-btn gray-btn" ng-click="telv.backListView();">返回</div>
+    </div>
+</form>
+<div class="telv-group  pl-form" ng-if="telv.isEdit && !telv.isEditGroup && main.isSuper">
+    <title-bar title-name="分组电影信息编辑" show-search="false"></title-bar>
+    <div class="movie-config-area">
+        <p class="check-all-area">
+            <input type="checkbox" class="movie-checkbox" ng-model="telv.isSelectAll"
+                   ng-click="telv.selectAllMovie(telv.isSelectAll);"/>
+            <label class="checkbox-text">全选</label>
+        </p>
+        <div class="check-movies-area">
+            <p class="check-item ifc" ng-repeat="movie in telv.movieList">
+                <input type="checkbox" class="movie-checkbox" ng-model="movie.checked" ng-click="telv.checkAll()"/>
+                <label class="checkbox-text" ng-bind="movie.nameCn"></label>
+            </p>
+        </div>
+    </div>
+    <div class="operate-btn-area">
+        <div class="operate-btn blue-btn" ng-click="telv.saveGroupMovie(user.userInfo);">确定</div><div class="operate-btn gray-btn" ng-click="telv.backListView();">返回</div>
+    </div>
+</div>

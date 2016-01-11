@@ -1,0 +1,60 @@
+<div class="ms" ng-if="!ms.isEdit && main.isSuper">
+    <title-bar title-name="安装包管理" show-search="false"></title-bar>
+    <table class="pl-table" tip>
+        <tbody>
+        <tr class="title-tr">
+            <td class="w5">序号</td><td class="w20">系统名称</td><td class="w10">系统类型</td><td class="w8">系统版本</td>
+            <td class="w10">发布时间</td><td class="w10">数据大小</td><td class="w20">备注</td><td class="w10">操作</td>
+        </tr>
+        <tr ng-repeat="item in ms.sysList">
+            <td class="w5" ng-bind="$index+1"></td><td class="w20" ng-bind="item.name"></td>
+            <td ng-bind="item.pkgTypeName"></td><td ng-bind="item.version"></td>
+            <td ng-bind="item.pubTime"></td><td ng-bind="item.size.size + 'KB'"></td>
+            <td ng-bind="item.remark"></td>
+            <td class="operate-btn">
+                <a class="link-btn" ng-click="ms.deleteSys(item);">删除</a>
+                <a class="link-btn" ng-href="{{item.path.path}}">下载</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <paging-bar page-action="ms.getSysList(param);" total-page="ms.totalPage"
+                is-show-add-btn="true" add-list-item="ms.goAddSys();"></paging-bar>
+</div>
+<div class="ms" ng-if="ms.isEdit && main.isSuper">
+    <title-bar title-name="系统安装包配置" show-search="false"></title-bar>
+    <form name="msForm" class="pl-form ms-form">
+        <div class="form-item">
+            <label class="form-value channelUpload1">
+                <upload server-path="ms.uploadPath" context=".channelUpload1" uploader="ms.channelUpload1"
+                        preview-img="ms.curSys.path" preview-title="安装包文件" file-type="ms.fileType"
+                        file-size="ms.curSys.size">
+                </upload>
+            </label>
+        </div>
+        <div class="form-item">
+            <label class="form-key">系统名称:</label>
+            <label class="form-value" ng-bind="ms.curSys.name"></label>
+        </div>
+        <div class="form-item">
+            <label class="form-key">系统类型:</label>
+            <!--<select class="form-value" name="pkgType" ng-model="ms.curSys.pkgType" required
+                    ng-options="s.name as s.nameCn for s in ms.pkgTypeList">
+            </select>-->
+            <label class="form-value" ng-bind="ms.curSys.pkgType" ng-if="ms.isAdd"></label>
+        </div>
+        <div class="form-item">
+            <label class="form-key">系统版本:</label>
+            <label class="form-value" ng-bind="ms.curSys.version"></label>
+        </div>
+        <div class="form-item">
+            <label class="form-key">备注:</label>
+            <textarea class="form-value" name="remark" ng-model="ms.curSys.remark" ng-maxlength="50" required></textarea>
+            <span class="valid-msg" ng-show="ms.isSubmit && msForm.remark.$invalid">请输入备注最多50个字符</span>
+        </div>
+        <div class="operate-btn-area">
+            <div class="operate-btn blue-btn" ng-click="!ms.isAdd ? ms.updateSys(msForm.$valid, ms.curSys) : ms.addSys(msForm.$valid, ms.curSys)">确定</div>
+            <div class="operate-btn gray-btn" ng-click="ms.backListView();">返回</div>
+        </div>
+    </form>
+</div>
