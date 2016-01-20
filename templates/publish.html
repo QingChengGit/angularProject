@@ -1,15 +1,17 @@
 <div class="pub" ng-if="!main.isSuper">
     <title-bar title-name="发布历史管理" show-search="false"></title-bar>
-    <table class="pl-table">
-        <tbody>
-        <tr class="title-tr">
-            <td class="w20">序号</td><td class="w15">版本号</td><td class="15">发布时间</td>
-        </tr>
-        <tr ng-repeat="item in pub.pubList">
-            <td ng-bind="$index+1"></td><td ng-bind="item.version"></td><td ng-bind="item.createTime"></td>
-        </tr>
-        </tbody>
-    </table>
-    <paging-bar page-action="pub.getPubList(param);" total-page="pub.totalPage"
-                is-show-add-btn="false"></paging-bar>
+    <div class="gird-wrap">
+        <table class="pl-table">
+            <tbody>
+            <tr class="title-tr">
+                <td class="w20">序号</td><td class="w15">版本号</td><td class="15">发布时间</td>
+            </tr>
+            <tr ng-repeat="item in pub.pubList">
+                <td ng-bind="$index+1"></td><td ng-bind="item.version"></td><td ng-bind="item.createTime"></td>
+            </tr>
+            </tbody>
+        </table>
+        <paging-bar page-action="pub.getPubList(param);" total-page="pub.totalPage"
+                    page-num="pub.pageNum" page-size="pub.pageSize" is-show-add-btn="false"></paging-bar>
+    </div>
 </div>

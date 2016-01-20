@@ -8,6 +8,7 @@ plMod.controller('indexCtrl', ['indexService', function (service) {
     self.isSuper = getCookie('userType') == 'ADMIN';
     self.isHigherSuper = getCookie('userType') == 'SUPER';
     self.isHotel = getCookie('userType') == 'HOTEL';
+    self.isHotelAdmin = getCookie('userType') == 'HOTELADMIN';
     self.curUserName = getCookie('userName');
 
     //删除cookie

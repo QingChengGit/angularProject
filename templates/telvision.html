@@ -1,25 +1,28 @@
 <div class="telvision" ng-if="!telv.isEdit">
     <title-bar title-name="影视片管理" show-search="true" search-place-holder="输入地区、名称、导演"
-               search-handler="telv.getMovieListBySearch(content);"></title-bar>
-    <table class="pl-table" tip>
-        <tbody>
-        <tr class="title-tr">
-            <td class="w10">序号</td><td class="w15">名称</td><td class="w10">影片路径</td><td class="w10">类别</td>
-            <td class="w10">类型</td><td class="w10">地区</td><td class="w10">导演</td><td class="w10">上映年份</td>
-            <td class="w10">操作</td>
-        </tr>
-        <tr ng-repeat="item in telv.movieList">
-            <td ng-bind="$index + 1"></td><td ng-bind="item.nameCn"></td><td ng-bind="item.path"></td>
-            <td ng-bind="item.firstClass"></td><td ng-bind="item.secondClass"></td><td ng-bind="item.area"></td>
-            <td ng-bind="item.direct"></td><td ng-bind="item.showYear"></td>
-            <td class="operate-btn">
-                <a class="link-btn" ng-click="telv.editMovie(item);">编辑</a><a class="link-btn" ng-click="telv.deleteMovie(item.id);">删除</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <paging-bar page-action="telv.getMovieList(param);" total-page="telv.totalPage" paging-param="telv.pagingParam"
-                page-num="telv.pageNum" is-show-add-btn="true" add-list-item="telv.addNewMovie();"></paging-bar>
+               search-content="telv.nameCn" search-handler="telv.getMovieListBySearch(content);"></title-bar>
+    <div class="gird-wrap">
+        <table class="pl-table" tip>
+            <tbody>
+            <tr class="title-tr">
+                <td class="w10">序号</td><td class="w15">名称</td><td class="w10">影片路径</td><td class="w10">类别</td>
+                <td class="w10">类型</td><td class="w10">地区</td><td class="w10">导演</td><td class="w10">上映年份</td>
+                <td class="w10">操作</td>
+            </tr>
+            <tr ng-repeat="item in telv.movieList">
+                <td ng-bind="$index + 1"></td><td ng-bind="item.nameCn"></td><td ng-bind="item.path"></td>
+                <td ng-bind="item.firstClass"></td><td ng-bind="item.secondClass"></td><td ng-bind="item.area"></td>
+                <td ng-bind="item.direct"></td><td ng-bind="item.showYear"></td>
+                <td class="operate-btn">
+                    <a class="link-btn" ng-click="telv.editMovie(item);">编辑</a><a class="link-btn" ng-click="telv.deleteMovie(item.id);">删除</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <paging-bar page-action="telv.getMovieList(param);" total-page="telv.totalPage" paging-param="telv.pagingParam"
+                    page-num="telv.pageNum" page-size="telv.pageSize" is-show-add-btn="true"
+                    add-list-item="telv.addNewMovie();"></paging-bar>
+    </div>
 </div>
 <div class="room" ng-if="telv.isEdit">
     <title-bar title-name="添加影视片信息" ng-if="telv.operate==='add'" show-search="false"></title-bar>

@@ -16,6 +16,7 @@ plMod.directive('titleBar', function () {
         scope: {
             titleName: '@',
             showSearch: '=',
+            searchContent: '=',
             searchHandler: '&',
             searchPlaceHolder: '@'
         }

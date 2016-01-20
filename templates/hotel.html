@@ -1,7 +1,7 @@
-<div class="hotel" ng-show="hotel.param == 'all' && main.isSuper">
+<div class="hotel" ng-show="hotel.param == 'all' && (main.isSuper || main.isHotelAdmin)">
     <div class="list-search-area">
         <select class="search-select" ng-model="hotel.conditName" ng-change="hotel.getHotelListBySearch();"
-                ng-options="s.id.toString() as s.nameCn for s in hotel.brandList">
+                ng-if="main.isSuper" ng-options="s.id.toString() as s.nameCn for s in hotel.brandList">
             <option value="" selected="selected">全部品牌</option>
         </select>
         <select class="search-select" ng-model="hotel.conditProv" ng-change="hotel.getHotelListBySearch();"
@@ -10,31 +10,33 @@
         </select>
     </div>
     <title-bar title-name="酒店列表" show-search="true" search-place-holder="输入酒店名称、PMS编号、具体地址"
-               search-handler="hotel.getHotelListBySearch(content);"></title-bar>
-    <table class="pl-table" tip>
-        <tbody>
-            <tr class="title-tr">
-                <td class="w5">序号</td><td class="w8">PMS编号</td><td class="w8">酒店品牌</td><td class="w10">酒店名称</td>
-                <td class="w8">所在省份</td><td class="w8">所在市区</td><td class="w10">具体地址</td>
-                <td class="w8">前台电话</td><td class="w8">用户账号</td><td class="w8">密码</td><td class="w10">操作</td>
-            </tr>
-            <tr ng-repeat="item in hotel.hotelList">
-                <td class="w5" ng-bind="$index+1"></td><td class="w8" ng-bind="item.chainId"></td><td ng-bind="item.nameCn"></td>
-                <td ng-bind="item.subName"></td><td ng-bind="item.provinceCn"></td><td ng-bind="item.area"></td>
-                <td ng-bind="item.address"></td><td ng-bind="item.phone"></td><td ng-bind="item.userName"></td>
-                <td ng-bind="item.password"></td>
-                <td class="operate-btn">
-                    <a class="link-btn" ng-href="#hotel/hotelList/{{item.id}}">编辑</a>
-                    <a class="link-btn" ng-click="hotel.deleteHotel(item);">删除</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <paging-bar page-action="hotel.getHotelList(param);" total-page="hotel.totalPage" is-show-add-btn="true"
-                page-num="hotel.pageNum" paging-param="hotel.pagingParam"
-                add-list-item="hotel.goAddHotel();"></paging-bar>
+               search-content="hotel.condition" search-handler="hotel.getHotelListBySearch(content);"></title-bar>
+    <div class="gird-wrap">
+        <table class="pl-table" tip>
+            <tbody>
+                <tr class="title-tr">
+                    <td class="w5">序号</td><td class="w8">PMS编号</td><td class="w8">酒店品牌</td><td class="w10">酒店名称</td>
+                    <td class="w8">所在省份</td><td class="w8">所在市区</td><td class="w10">具体地址</td>
+                    <td class="w8">前台电话</td><td class="w8">用户账号</td><td class="w8">密码</td><td class="w10">操作</td>
+                </tr>
+                <tr ng-repeat="item in hotel.hotelList">
+                    <td class="w5" ng-bind="$index+1"></td><td class="w8" ng-bind="item.chainId"></td><td ng-bind="item.nameCn"></td>
+                    <td ng-bind="item.subName"></td><td ng-bind="item.provinceCn"></td><td ng-bind="item.area"></td>
+                    <td ng-bind="item.address"></td><td ng-bind="item.phone"></td><td ng-bind="item.userName"></td>
+                    <td ng-bind="item.password"></td>
+                    <td class="operate-btn">
+                        <a class="link-btn" ng-href="#hotel/hotelList/{{item.id}}">编辑</a>
+                        <a class="link-btn" ng-click="hotel.deleteHotel(item);">删除</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <paging-bar page-action="hotel.getHotelList(param);" total-page="hotel.totalPage" is-show-add-btn="true"
+                    page-num="hotel.pageNum" paging-param="hotel.pagingParam" page-size="hotel.pageSize"
+                    add-list-item="hotel.goAddHotel();"></paging-bar>
+    </div>
 </div>
-<div class="hotel" ng-if="!main.isSuper || hotel.param !== 'all'">
+<div class="hotel" ng-if="main.isHotel || hotel.param !== 'all'">
     <title-bar title-name="酒店信息" show-search="false"></title-bar>
     <a class="back-btn link-btn" ng-if="main.isSuper" ng-click="hotel.goModifyInfo();">修改密码</a>
     <form name="hotelForm" class="pl-form hotel-form" novalidate>
@@ -166,7 +168,7 @@
         </div>-->
         <div class="operate-btn-area">
             <div class="operate-btn blue-btn" ng-click="hotel.updateHotel(hotelForm.$valid, hotel.userHotel);">确定</div>
-            <div class="operate-btn gray-btn" ng-if="main.isSuper" ng-click="hotel.backListView();">返回</div>
+            <div class="operate-btn gray-btn" ng-click="hotel.backListView();">返回</div>
         </div>
     </form>
 </div>

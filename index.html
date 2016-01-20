@@ -22,10 +22,10 @@
                 <div class="logout-btn" ng-click="main.loginOut();">退出</div>
             </div>
         </div>
-        <div class="main-container clearfix">
+        <div class="main-container">
             <div class="menu-area" select-link>
                 <div class="blue-btn publish-btn" ng-if="main.isHotel" ng-click="main.publish();">发布</div>
-                <p class="cur-version" ng-if="!main.isSuper" ng-bind="'当前版本号:'+main.curVersion"></p>
+                <p class="cur-version" ng-if="main.isHotel" ng-bind="'当前版本号:'+main.curVersion"></p>
                 <ul class="menu-ul">
                     <li class="menu-item pointer noselect" ng-repeat="menu in main.menus" ng-if="menu.parentId < 0">
                         <p class="parent-item-name" ng-bind="menu.nameCn" hide-next-all></p>
@@ -45,9 +45,9 @@
             </div>
             <div class="content-area" ng-view></div>
         </div>
-        <div class="footer">
+        <!--<div class="footer">
             <p class="footer-content" ng-bind="'北京屏联科技有限公司 &copy;2008-'+main.curYear+' 版权所有'"></p>
-        </div>
+        </div>-->
         <div class="mask-layer"><div class="mask-rotate"></div></div>
     </div>
     <script type="text/javascript">
@@ -79,6 +79,7 @@
     <script src="js/common/multSelectDirective.js"></script>
     <script src="js/common/uploaderDirective.js"></script>
     <script src="js/common/tipDirective.js"></script>
+    <script src="js/common/galleryDirective.js"></script>
     <script src="js/common/commService.js"></script>
     <script src="js/common/dialogService.js"></script>
     <script src="js/modules/hotels/hotelService.js"></script>

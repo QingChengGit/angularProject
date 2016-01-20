@@ -3,17 +3,10 @@
  */
 plMod.controller('staticCtrl', ['staticService', 'roomTypeService', '$routeParams',
     function (service, roomTypeService, $routeParams) {
-    var self = this;
+    var self = this,
+        queryConditionObj,
+        cacheQueryObj;
     self.type = $routeParams.operateType;
-    //酒店名称搜索条件
-    self.hotelName = '';
-    //客户姓名搜索条件
-    self.guestName = '';
-    self.sex = '';
-    self.roomType = '';
-    self.age = '';
-    self.startTime = '';
-    self.endTime = '';
     self.pagingParam = {
         hotelName: '',
         guestName: '',
@@ -27,7 +20,10 @@ plMod.controller('staticCtrl', ['staticService', 'roomTypeService', '$routeParam
         service.fetchHouse(paramObj).then(function (data) {
             self.houseList = data.list;
             self.pageNum = data.pages.pageNum;
+            self.pageSize = paramObj.pageSize;
             self.totalPage = data.pages.pages;
+            queryConditionObj = paramObj;
+            localStorage.setItem('static_house_condition', JSON.stringify(queryConditionObj));
         }).catch(function () {
             self.houseList = [];
         });
@@ -57,7 +53,7 @@ plMod.controller('staticCtrl', ['staticService', 'roomTypeService', '$routeParam
         self.pagingParam.roomType = self.roomType;
         self.pagingParam.age = self.age;
         self.pagingParam.timeRange = startTime + '~' + endTime;
-        if(isNaN(self.pagingParam.age)){
+        if(self.pagingParam.age && isNaN(self.pagingParam.age)){
             alert('年龄必须为数字,请检查!');
             return;
         }
@@ -67,19 +63,31 @@ plMod.controller('staticCtrl', ['staticService', 'roomTypeService', '$routeParam
                 return;
             }
         }
-        operateMap[self.type]($.extend({
-            pageNum: 1,
-            pageSize: 20
-        }, self.pagingParam));
+        cacheQueryObj.pageNum = 1;
+        operateMap[self.type].interface($.extend(cacheQueryObj, self.pagingParam));
     };
 
     var operateMap = {
-        house: self.getHouseList
+        house: {
+            conditionName: 'static_house_condition',
+            interface: self.getHouseList
+        }
     };
-    operateMap[self.type]({
+    cacheQueryObj = localStorage.getItem(operateMap[self.type].conditionName);
+    if(cacheQueryObj){
+        cacheQueryObj = JSON.parse(cacheQueryObj);
+        self.guestName = cacheQueryObj.guestName;
+        self.sex = cacheQueryObj.sex;
+        self.roomType = cacheQueryObj.roomType;
+        self.age = cacheQueryObj.age;
+        self.startTime = cacheQueryObj.timeRange ? cacheQueryObj.timeRange.split('~')[0] : '';
+        self.endTime = cacheQueryObj.timeRange ? cacheQueryObj.timeRange.split('~')[1] : '';
+    }
+    cacheQueryObj = cacheQueryObj || {
         pageNum: 1,
         pageSize: 20
-    });
+    };
+    operateMap[self.type].interface(cacheQueryObj);
     roomTypeService.getAllRoomType().then(function (data) {
         self.roomTypeList = data;
     });

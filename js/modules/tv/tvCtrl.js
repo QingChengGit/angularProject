@@ -5,7 +5,20 @@ plMod.controller('tvCtrl', ['$routeParams', '$location', '$q', 'tvService', 'com
     function ($routeParams, $location, $q, service, commService) {
     var self = this,
         prevEditChannel,
-        curPageSize;
+        queryConditionObj,
+        cacheQueryObj,
+        curPageSize,
+        curMenuId,
+        previewMap = {
+            surround: {
+                perNum: 5,
+                templateUrl: 'surroundTemplate.html'
+            },
+            surroundDetail: {
+                perNum: 1,
+                templateUrl: 'detailTemplate.html'
+            }
+        };
     self.isEdit = false;
     self.uploader1 = null;
     self.uploader2 = null;
@@ -38,7 +51,11 @@ plMod.controller('tvCtrl', ['$routeParams', '$location', '$q', 'tvService', 'com
     this.getTvChannels = function (paramObj) {
         service.fetchTvChannels(paramObj).then(function (data) {
             self.channels = data.list;
+            self.pageNum = data.pages.pageNum;
+            self.pageSize = data.pages.pageSize;
             self.totalPage = data.pages.pages;
+            queryConditionObj = paramObj;
+            localStorage.setItem('channel_condition', JSON.stringify(queryConditionObj));
             curPageSize = paramObj.pageSize;
         }).catch(function () {
             self.channels = [];
@@ -57,11 +74,7 @@ plMod.controller('tvCtrl', ['$routeParams', '$location', '$q', 'tvService', 'com
                 channel.serviceTypeCn = tmpChannel.serviceTypeCn;
                 self.channels.unshift(channel);
             }else{
-                self.getTvChannels({
-                    pageNum: 1,
-                    pageSize: curPageSize,
-                    parentId: self.parentId
-                });
+                self.getTvChannels(queryConditionObj);
             }
             alert('添加成功!');
             self.backListView();
@@ -255,6 +268,51 @@ plMod.controller('tvCtrl', ['$routeParams', '$location', '$q', 'tvService', 'com
             q6.resolve();
         });
     };
+    this.getPreviewData = function (parentId) {
+        var previewId = localStorage.getItem('previewId') || '';
+        service.getChannelById(previewId).then(function (channel) {
+            service.getPreviewData(parentId).then(function (data) {
+                var list = data.list;
+                for(var i = 0;i < list.length;i += 1){
+                    list[i].adImg = channel.adImg;
+                }
+                self.previewData = list;
+            }).catch(function () {
+                self.previewData = [];
+            });
+        });
+    };
+    this.clickChildMenu = function (item) {
+        $location.url('/tv/preview/' + item.id + '?type=surround');
+    };
+    this.clickImg = function (item) {
+        $location.url('/tv/preview/' + item.id + '?type=surroundDetail');
+    };
+    this.showChildMenu = function (item, evt) {
+        self.showChild = !self.showChild;
+        if(curMenuId === item.id){
+            return;
+        }
+        curMenuId = item.id;
+        self.curPosition = {
+            x: evt.target.getBoundingClientRect().left + document.body.scrollLeft - 200,
+            y: evt.target.clientHeight + 25
+        };
+        service.getPreviewData(item.id).then(function (data) {
+            self.childMenuData = data.list;
+        }).catch(function () {
+            self.childMenuData = [];
+        }).finally(function () {
+            self.showChild = true;
+        });
+    };
+    this.switchPage = function () {
+        self.showChild = false;
+        self.childMenuData = [];
+    };
+    this.back = function () {
+        window.history.back();
+    };
 
     if(!self.type){
         commService.getSelectData('signalSource').then(function (data) {
@@ -262,27 +320,49 @@ plMod.controller('tvCtrl', ['$routeParams', '$location', '$q', 'tvService', 'com
             self.getTvConf();
         });
     }else{
-        self.getTvChannels({
-            pageNum: 1,
-            pageSize: 20,
-            parentId: self.parentId
-        });
-        if(self.type === 'Two'){
-            localStorage.setItem('secondParentId', self.parentId);
-        }
-        if(self.type === 'Third'){
-            localStorage.setItem('thirdParentId', self.parentId);
-            self.secondParentId = localStorage.getItem('secondParentId');
-        }
-        if(self.type === 'Four'){
-            self.thirdParentId = localStorage.getItem('thirdParentId');
-        }
-        if(self.type !== 'One'){
-            self.fileType = {
-                title: 'Txt',
-                extensions: 'txt',
-                mimeTypes: 'text/plain'
-            };
+        if(self.type === 'preview'){
+            var operate = $location.search().type;
+            self.operate = operate;
+            if(self.operate !== 'channel'){
+                self.templateUrl = previewMap[operate].templateUrl;
+                self.perNum = previewMap[operate].perNum;
+                if(operate === 'surround'){
+                    localStorage.setItem('previewId', self.parentId);
+                }
+                self.secondParentId = localStorage.getItem('secondParentId');
+                self.getPreviewData(self.parentId);
+            }else{
+                self.getPreviewData(0);
+            }
+        }else{
+            cacheQueryObj = localStorage.getItem('channel_condition');
+            if(cacheQueryObj){
+                cacheQueryObj = JSON.parse(cacheQueryObj);
+            }
+            cacheQueryObj = cacheQueryObj || {
+                    pageNum: 1,
+                    pageSize: 20
+                };
+            self.getTvChannels($.extend(cacheQueryObj, {
+                parentId: self.parentId
+            }));
+            if(self.type === 'Two'){
+                localStorage.setItem('secondParentId', self.parentId);
+            }
+            if(self.type === 'Third'){
+                localStorage.setItem('thirdParentId', self.parentId);
+                self.secondParentId = localStorage.getItem('secondParentId');
+            }
+            if(self.type === 'Four'){
+                self.thirdParentId = localStorage.getItem('thirdParentId');
+            }
+            if(self.type !== 'One'){
+                self.fileType = {
+                    title: 'Txt',
+                    extensions: 'txt',
+                    mimeTypes: 'text/plain'
+                };
+            }
         }
     }
 }]);

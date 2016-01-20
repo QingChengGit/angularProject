@@ -139,13 +139,6 @@ module.exports = function (grunt) {
                 }
                 ]
             }
-        },
-        uglify: {
-            vue: {
-                files: {
-                    'dist/vue-resource.min.js': 'vue-resource.js'
-                }
-            }
         }
     });
 

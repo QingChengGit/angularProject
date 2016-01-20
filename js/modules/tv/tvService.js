@@ -180,6 +180,36 @@ plMod.service('tvService', ['postIntercept', '$q', function ($http, $q){
             }
         });
     };
+    this.getPreviewData = function (parentId) {
+        var url = 'api/menuChannel/loadMenuChannel';
+        return $http.post(url, {
+            parentId: parentId
+        }).then(function (res) {
+            res = res.data;
+            if(res.status){
+                var channels = $.map(res.data.list, function (channel) {
+                    return new Channel(channel);
+                });
+                res.data.list = channels;
+                return $q.when(res.data);
+            }else{
+                return $q.reject(null);
+            }
+        });
+    };
+    this.getChannelById = function (id) {
+        var url = 'api/menuChannel/get';
+        return $http.post(url, {
+            id: id
+        }).then(function (res) {
+            res = res.data;
+            if(res.status){
+                return $q.when(new Channel(res.data));
+            }else{
+                return $q.reject(new Channel({}));
+            }
+        });
+    };
     this.setChannel = function (data) {
         return new Channel(data);
     };

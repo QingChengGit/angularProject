@@ -6,7 +6,9 @@ plMod.controller('telvisionCtrl', ['$routeParams', 'telvisionService', 'hotelSer
         operateMap,
         curPageSize,
         prevEditMovie,
-        prevEditGroup;
+        prevEditGroup,
+        queryConditionObj,
+        cacheQueryObj;
     self.uploader = null;
     self.uploaderSmall = null;
     self.type = $routeParams.operateType;
@@ -41,7 +43,10 @@ plMod.controller('telvisionCtrl', ['$routeParams', 'telvisionService', 'hotelSer
         return service.fetchMovies(paramObj).then(function (data) {
             self.movieList = data.list;
             self.pageNum = data.pages.pageNum;
+            self.pageSize = data.pages.pageSize;
             self.totalPage = data.pages.pages;
+            queryConditionObj = paramObj;
+            localStorage.setItem('movie_condition', JSON.stringify(queryConditionObj));
             curPageSize = paramObj.pageSize;
         }).catch(function () {
             self.movieList = [];
@@ -205,10 +210,8 @@ plMod.controller('telvisionCtrl', ['$routeParams', 'telvisionService', 'hotelSer
     };
     this.getMovieListBySearch = function (content) {
         self.pagingParam.nameCn = content || '';
-        self.getMovieList($.extend({
-            pageNum: 1,
-            pageSize: 20
-        }, self.pagingParam));
+        queryConditionObj.pageNum = 1;
+        self.getMovieList($.extend(queryConditionObj, self.pagingParam));
     };
     this.save = function (isValid) {
         if(self.operate === 'add'){
@@ -281,8 +284,15 @@ plMod.controller('telvisionCtrl', ['$routeParams', 'telvisionService', 'hotelSer
         movie: self.getMovieList,
         group: self.getGroups
     };
-    operateMap[self.type]({
-        pageNum: 1,
-        pageSize: 20
-    });
+
+    cacheQueryObj = localStorage.getItem('movie_condition');
+    if(cacheQueryObj){
+        cacheQueryObj = JSON.parse(cacheQueryObj);
+        self.nameCn = cacheQueryObj.nameCn;
+    }
+    cacheQueryObj = cacheQueryObj || {
+            pageNum: 1,
+            pageSize: 20
+        };
+    operateMap[self.type](cacheQueryObj);
 }]);

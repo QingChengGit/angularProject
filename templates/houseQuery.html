@@ -1,7 +1,8 @@
 <div class="static">
     <title-bar title-name="入住信息查询" show-search="false"></title-bar>
+    <div class="gird-wrap">
     <div class="list-search-area">
-        <label ng-if="main.isSuper">
+        <label ng-if="main.isSuper || main.isHotelAdmin">
             <label class="condition-text">酒店名称：</label><input type="text" ng-model="static.hotelName" />
         </label>
         <label class="condition-text">查询时间：</label>
@@ -41,5 +42,6 @@
         </tbody>
     </table>
     <paging-bar page-action="static.getHouseList(param);" page-num="static.pageNum" total-page="static.totalPage"
-                paging-param="static.pagingParam"></paging-bar>
+                paging-param="static.pagingParam" page-size="static.pageSize"></paging-bar>
+    </div>
 </div>

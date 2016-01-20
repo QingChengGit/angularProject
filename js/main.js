@@ -104,6 +104,9 @@ plMod.config(['$routeProvider', '$locationProvider', '$httpProvider', function (
             if($routeParams.operateType){
                 path = 'tvChannel' + $routeParams.operateType +'.html';
             }
+            if($routeParams.operateType === 'preview'){
+                path = 'preview.html';
+            }
             return basePath + path;
         },
         controller: 'tvCtrl',

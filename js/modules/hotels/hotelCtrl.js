@@ -5,13 +5,11 @@ plMod.controller('hotelCtrl', ['$routeParams', '$location', 'commService', 'hote
     function ($routeParams, $location, commService, service, dialogService) {
     var self = this,
         hotelBrandMap = {},
-        goodsList;
+        goodsList,
+        queryConditionObj,
+        cacheQueryObj;
     self.type = $routeParams.operateType;
     self.param = $routeParams.param;
-    //品牌搜索条件
-    self.conditName = '';
-    //省份搜索条件
-    self.conditProv = '';
     self.pagingParam = {
         condition: '',
         province: '',
@@ -28,6 +26,9 @@ plMod.controller('hotelCtrl', ['$routeParams', '$location', 'commService', 'hote
             self.hotelList = list;
             self.pageNum = data.pages.pageNum;
             self.totalPage = data.pages.pages;
+            self.pageSize = data.pages.pageSize;
+            queryConditionObj = paramObj;
+            localStorage.setItem('hotel_condition', JSON.stringify(queryConditionObj));
         }).catch(function () {
             self.hotelList = [];
         });
@@ -88,10 +89,8 @@ plMod.controller('hotelCtrl', ['$routeParams', '$location', 'commService', 'hote
         self.pagingParam.condition = hotelName || '';
         self.pagingParam.province = self.conditProv;
         self.pagingParam.name = self.conditName;
-        self.getHotelList($.extend({
-            pageNum: 1,
-            pageSize: 20
-        }, self.pagingParam));
+        queryConditionObj.pageNum = 1;
+        self.getHotelList($.extend(queryConditionObj, self.pagingParam));
     };
     /*this.editHotel = function (hotel) {
         self.isEdit = true;
@@ -246,10 +245,18 @@ plMod.controller('hotelCtrl', ['$routeParams', '$location', 'commService', 'hote
                     initMap();
                 });
             }else{
-                self.getHotelList({
-                    pageNum: 1,
-                    pageSize: 20
-                });
+                cacheQueryObj = localStorage.getItem('hotel_condition');
+                if(cacheQueryObj){
+                    cacheQueryObj = JSON.parse(cacheQueryObj);
+                    self.conditName = cacheQueryObj.name;
+                    self.conditProv = cacheQueryObj.province;
+                    self.condition = cacheQueryObj.condition;
+                }
+                cacheQueryObj = cacheQueryObj || {
+                        pageNum: 1,
+                        pageSize: 20
+                    };
+                self.getHotelList(cacheQueryObj);
                 self.provList = service.getAllProvince();
             }
         }else{

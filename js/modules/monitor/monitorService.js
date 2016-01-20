@@ -18,7 +18,10 @@ plMod.service('monitorService', ['postIntercept', '$q', function ($http, $q){
         this.id = data.id;
         this.hotelId = data.hotelId || '';
         this.roomNum = data.roomNum || '';
+        //设置运行时长
         this.limitedTime = data.limitedTime || '';
+        //rcu设置时长
+        this.confTime = data.confTime || '';
         this.runningTime = data.runningTime || '';
         this.runningTimeNum = data.runningTimeNum || '';
         this.expireTime = data.expireTime || '';
@@ -89,9 +92,25 @@ plMod.service('monitorService', ['postIntercept', '$q', function ($http, $q){
             }
         });
     };
-    this.updateRCU = function (rcu) {
+    /*this.updateRCU = function (rcu) {
         var url = 'api/monitor/updateRoomRcu';
         return $http.post(url, rcu).then(function (res) {
+            res = res.data;
+            if(res.status){
+                return $q.when(true);
+            }else{
+                return $q.reject(null);
+            }
+        });
+    };*/
+    this.batchUpdateRCU = function (hotelId, rcuTime, roomNums) {
+        var url = 'api/monitor/updateRoomRcuOnBatch',
+            data = {
+                hotelId: hotelId,
+                roomNums: roomNums,
+                rcuTime: rcuTime
+            };
+        return $http.post(url, data).then(function (res) {
             res = res.data;
             if(res.status){
                 return $q.when(true);

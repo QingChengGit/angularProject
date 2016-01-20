@@ -1,0 +1,34 @@
+.tip-preview-container{
+    position: absolute;
+    width: 150px;
+    border-width: 1px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #78829d;
+    background-color: #3e424a;
+    .preview-content{
+        min-height: 120px;
+    }
+    .left-btn, .right-btn, .menu-item{
+        height: 35px;
+        line-height: 35px;
+        text-align: center;
+    }
+    .menu-item{
+        border-bottom: 1px solid #dadfea;
+    }
+    .left-btn, .right-btn{
+        font-size: 30px;
+        font-weight: bold;
+    }
+    &:after{
+        position: absolute;
+        left: 25px;
+        content: '';
+        border-top: 20px solid #3e424a;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+    }
+}

@@ -5,26 +5,28 @@
         <a class="blue-btn" ng-href="api/hotelRoom/exportData">导出</a>
     </div>
     <title-bar title-name="房间管理" show-search="false"></title-bar>
-    <table class="pl-table" tip>
-        <tbody>
-        <tr class="title-tr">
-            <td class="w5">房间编号</td><td class="w15">类型</td><td class="w5">单元楼</td><td class="w5">楼层</td>
-            <td class="w15">电视IP</td><td class="w15">RCU IP</td><td class="w10">WIFI</td>
-            <td class="w10">操作</td>
-        </tr>
-        <tr ng-repeat="item in room.roomList">
-            <td class="w5" ng-bind="item.roomNum"></td><td class="w15" ng-bind="item.roomTypeName"></td>
-            <td ng-bind="item.unit"></td><td ng-bind="item.floor"></td><td ng-bind="item.ip"></td>
-            <td ng-bind="item.rcuIp"></td><td ng-bind="item.wifi"></td>
-            <td class="operate-btn">
-                <a class="link-btn" ng-href="#/room/editRoom/{{item.id}}">编辑</a>
-                <a class="link-btn" ng-click="room.deleteRoom(item);">删除</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <paging-bar page-action="room.getRoomList(param);" total-page="room.totalPage"
-                is-show-add-btn="true" add-list-item="room.goRoom();"></paging-bar>
+    <div class="gird-wrap">
+        <table class="pl-table" tip>
+            <tbody>
+            <tr class="title-tr">
+                <td class="w5">房间编号</td><td class="w15">类型</td><td class="w5">单元楼</td><td class="w5">楼层</td>
+                <td class="w15">电视IP</td><td class="w15">RCU IP</td><td class="w10">WIFI</td>
+                <td class="w10">操作</td>
+            </tr>
+            <tr ng-repeat="item in room.roomList">
+                <td class="w5" ng-bind="item.roomNum"></td><td class="w15" ng-bind="item.roomTypeName"></td>
+                <td ng-bind="item.unit"></td><td ng-bind="item.floor"></td><td ng-bind="item.ip"></td>
+                <td ng-bind="item.rcuIp"></td><td ng-bind="item.wifi"></td>
+                <td class="operate-btn">
+                    <a class="link-btn" ng-href="#/room/editRoom/{{item.id}}">编辑</a>
+                    <a class="link-btn" ng-click="room.deleteRoom(item);">删除</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <paging-bar page-action="room.getRoomList(param);" total-page="room.totalPage" page-num="room.pageNum"
+                    is-show-add-btn="true" page-size="room.pageSize" add-list-item="room.goRoom();"></paging-bar>
+    </div>
 </div>
 <div class="room" ng-if="room.type!=='roomList'">
     <title-bar title-name="修改房间信息" ng-if="room.type === 'editRoom'" show-search="false"></title-bar>

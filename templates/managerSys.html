@@ -1,25 +1,27 @@
 <div class="ms" ng-if="!ms.isEdit && main.isSuper">
     <title-bar title-name="安装包管理" show-search="false"></title-bar>
-    <table class="pl-table" tip>
-        <tbody>
-        <tr class="title-tr">
-            <td class="w5">序号</td><td class="w20">系统名称</td><td class="w10">系统类型</td><td class="w8">系统版本</td>
-            <td class="w10">发布时间</td><td class="w10">数据大小</td><td class="w20">备注</td><td class="w10">操作</td>
-        </tr>
-        <tr ng-repeat="item in ms.sysList">
-            <td class="w5" ng-bind="$index+1"></td><td class="w20" ng-bind="item.name"></td>
-            <td ng-bind="item.pkgTypeName"></td><td ng-bind="item.version"></td>
-            <td ng-bind="item.pubTime"></td><td ng-bind="item.size.size + 'KB'"></td>
-            <td ng-bind="item.remark"></td>
-            <td class="operate-btn">
-                <a class="link-btn" ng-click="ms.deleteSys(item);">删除</a>
-                <a class="link-btn" ng-href="{{item.path.path}}">下载</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <paging-bar page-action="ms.getSysList(param);" total-page="ms.totalPage"
-                is-show-add-btn="true" add-list-item="ms.goAddSys();"></paging-bar>
+    <div class="gird-wrap">
+        <table class="pl-table" tip>
+            <tbody>
+            <tr class="title-tr">
+                <td class="w5">序号</td><td class="w20">系统名称</td><td class="w10">系统类型</td><td class="w8">系统版本</td>
+                <td class="w10">发布时间</td><td class="w10">数据大小</td><td class="w20">备注</td><td class="w10">操作</td>
+            </tr>
+            <tr ng-repeat="item in ms.sysList">
+                <td class="w5" ng-bind="$index+1"></td><td class="w20" ng-bind="item.name"></td>
+                <td ng-bind="item.pkgTypeName"></td><td ng-bind="item.version"></td>
+                <td ng-bind="item.pubTime"></td><td ng-bind="item.size.size + 'KB'"></td>
+                <td ng-bind="item.remark"></td>
+                <td class="operate-btn">
+                    <a class="link-btn" ng-click="ms.deleteSys(item);">删除</a>
+                    <a class="link-btn" ng-href="{{item.path.path}}">下载</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <paging-bar page-action="ms.getSysList(param);" total-page="ms.totalPage" page-num="ms.pageNum"
+                    page-size="ms.pageSize" is-show-add-btn="true" add-list-item="ms.goAddSys();"></paging-bar>
+    </div>
 </div>
 <div class="ms" ng-if="ms.isEdit && main.isSuper">
     <title-bar title-name="系统安装包配置" show-search="false"></title-bar>

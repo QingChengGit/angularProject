@@ -1,0 +1,15 @@
+<div class="pre-view" ng-if="main.isHotel">
+    <a class="blue-btn cancel-btn" ng-click="tv.back();">返回</a>
+    <gallery ng-if="tv.operate==='channel'" imgs="tv.previewData" per-num="6"
+                  switch-page-handler="tv.switchPage();" template-url="menuPreviewTemplate.html"
+             img-click-handler="tv.showChildMenu(item, evt);">
+    </gallery>
+    <gallery ng-if="tv.operate==='channel' && tv.showChild" imgs="tv.childMenuData" per-num="4"
+             position="tv.curPosition" template-url="tipPreviewTemplate.html"
+             img-click-handler="tv.clickChildMenu(item);">
+    </gallery>
+    <gallery ng-if="tv.operate==='surround'" imgs="tv.previewData" per-num="tv.perNum"
+             template-url="surroundTemplate.html" img-click-handler="tv.clickImg(item);"></gallery>
+    <gallery ng-if="tv.operate==='surroundDetail'" imgs="tv.previewData" per-num="tv.perNum"
+             template-url="detailTemplate.html"></gallery>
+</div>

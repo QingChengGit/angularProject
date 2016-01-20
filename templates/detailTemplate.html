@@ -1,0 +1,14 @@
+<div>
+<div class="pl-gallery-container clearfix">
+    <div class="gallery-left-btn" ng-click="goPrev($event);">&lt;</div>
+    <div class="gallery-content" ng-repeat="item in curImgArr">
+        <img class="gallery-detail-advert" ng-src="{{item.adImg.path}}"/>
+        <img class="gallery-detail-img" ng-src="{{item.img.path}}"/>
+        <div class="gallery-detail-text" ng-bind="item.contentCn.path">
+        </div>
+        <img class="gallery-detail-code" ng-src="{{item.qrCodeImg.path}}"/>
+    </div>
+    <div class="gallery-right-btn" ng-click="goNext($event);">&gt;</div>
+</div>
+<div class="gallery-page-info" ng-bind="curPage + '/' + totalPage + '页'"></div>
+</div>

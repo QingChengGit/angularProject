@@ -49,6 +49,7 @@ $(function () {
                     setCookie('VALIDATE-TOKEN', data.data.token, { path: '/'});
                     setCookie('userName', data.data.userName, { path: '/'});
                     setCookie('userType', data.data.userType, { path: '/'});
+                    localStorage.clear();
                     window.location.href = 'index.html';
                 }else{
                     alert(data.msg);

@@ -3,6 +3,8 @@
  */
 plMod.controller('roomTypeCtrl', ['roomTypeService', '$routeParams', 'dialogService', function (service, $routeParams, dialogService) {
     var self = this,
+        queryConditionObj,
+        cacheQueryObj,
         curPageSize = 10,
         roomTypeTemplate = '<form class="pl-form roomtype-form" novalidate>' +
             '<div class="form-item"><label class="form-key">类型名称:</label>' +
@@ -15,7 +17,11 @@ plMod.controller('roomTypeCtrl', ['roomTypeService', '$routeParams', 'dialogServ
     this.getRoomTypeList = function (paramObj) {
         service.fetchRoomTypeList(paramObj).then(function (data) {
             self.roomTypeList = data.list;
+            self.pageNum = data.pages.pageNum;
+            self.pageSize = data.pages.pageSize;
             self.totalPage = data.pages.pages;
+            queryConditionObj = paramObj;
+            localStorage.setItem('room_type_condition', JSON.stringify(queryConditionObj));
             curPageSize = paramObj.pageSize;
         }).catch(function () {
             self.roomTypeList = [];
@@ -95,12 +101,15 @@ plMod.controller('roomTypeCtrl', ['roomTypeService', '$routeParams', 'dialogServ
         });
         $('.room-type').val(self.curRoomType.name);
     };
-/*    this.backListView = function () {
-        window.history.back();
-    };*/
 
-    self.getRoomTypeList({
-        pageNum: 1,
-        pageSize: 20
-    });
+    cacheQueryObj = localStorage.getItem('room_type_condition');
+    if(cacheQueryObj){
+        cacheQueryObj = JSON.parse(cacheQueryObj);
+    }
+    cacheQueryObj = cacheQueryObj || {
+            pageNum: 1,
+            pageSize: 20
+        };
+
+    self.getRoomTypeList(cacheQueryObj);
 }]);

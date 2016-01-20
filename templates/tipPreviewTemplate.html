@@ -1,0 +1,9 @@
+<div class="tip-preview-container" ng-click="imgClick($event);">
+    <div class="left-btn pointer" ng-if="totalPage > 1" ng-click="goPrev($event);">▲</div>
+    <div class="preview-content">
+        <div class="menu-item pointer" ng-repeat="item in curImgArr">
+            <p imgNo="{{$index}}">{{item.nameCn}}</p>
+        </div>
+    </div>
+    <div class="right-btn pointer" ng-if="totalPage > 1" ng-click="goNext($event);">▼</div>
+</div>

@@ -1,26 +1,28 @@
 <div class="sys" ng-if="!sys.isEdit && main.isHigherSuper">
     <title-bar title-name="系统字典管理" show-search="false"></title-bar>
     <a class="back-btn link-btn" ng-if="sys.isShowDetail" ng-click="sys.backSummary();">返回</a>
-    <table class="pl-table" tip>
-        <tbody>
-        <tr class="title-tr">
-            <td class="w5">序号</td><td class="w8">唯一名</td><td class="w20">中文名</td><td class="w20">英文名</td>
-            <td>备注</td><td class="w8">发布值</td><td class="w20">拓展信息</td><td class="w10">操作</td>
-        </tr>
-        <tr ng-repeat="item in (!sys.isShowDetail ? sys.dictList : sys.dictDetailList)">
-            <td class="w5" ng-bind="$index+1"></td><td class="w10" ng-bind="item.name"></td><td ng-bind="item.nameCn"></td>
-            <td ng-bind="item.nameEn"></td><td ng-bind="item.remark"></td><td ng-bind="item.valueCn"></td>
-            <td ng-bind="item.extInfo"></td>
-            <td class="operate-btn">
-                <a class="link-btn" ng-if="!sys.isShowDetail" ng-click="sys.showDetail(item);">详细</a>
-                <a class="link-btn" ng-click="sys.editDict(item);">编辑</a>
-                <a class="link-btn" ng-click="sys.deleteDict(item);">删除</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <paging-bar page-action="sys.getDictList(param);" paging-param="sys.pagingParam" total-page="sys.totalPage"
-                is-show-add-btn="true" add-list-item="sys.goAddDict();"></paging-bar>
+    <div class="gird-wrap">
+        <table class="pl-table" tip>
+            <tbody>
+            <tr class="title-tr">
+                <td class="w5">序号</td><td class="w8">唯一名</td><td class="w20">中文名</td><td class="w20">英文名</td>
+                <td>备注</td><td class="w8">发布值</td><td class="w20">拓展信息</td><td class="w10">操作</td>
+            </tr>
+            <tr ng-repeat="item in (!sys.isShowDetail ? sys.dictList : sys.dictDetailList)">
+                <td class="w5" ng-bind="$index+1"></td><td class="w10" ng-bind="item.name"></td><td ng-bind="item.nameCn"></td>
+                <td ng-bind="item.nameEn"></td><td ng-bind="item.remark"></td><td ng-bind="item.valueCn"></td>
+                <td ng-bind="item.extInfo"></td>
+                <td class="operate-btn">
+                    <a class="link-btn" ng-if="!sys.isShowDetail" ng-click="sys.showDetail(item);">详细</a>
+                    <a class="link-btn" ng-click="sys.editDict(item);">编辑</a>
+                    <a class="link-btn" ng-click="sys.deleteDict(item);">删除</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <paging-bar page-action="sys.getDictList(param);" paging-param="sys.pagingParam" total-page="sys.totalPage"
+                    is-show-add-btn="true" add-list-item="sys.goAddDict();"></paging-bar>
+    </div>
 </div>
 <div class="sys" ng-if="sys.isEdit && main.isHigherSuper">
     <title-bar title-name="添加系统字典信息" ng-if="sys.isAdd" show-search="false"></title-bar>

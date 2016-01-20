@@ -3,7 +3,9 @@
  */
 plMod.controller('managesysCtrl', ['managesysService', '$q', '$scope', 'commService', function (service, $q, $scope, commService) {
     var self = this,
-        curPageSize = 10,
+        queryConditionObj,
+        cacheQueryObj,
+        curPageSize = 20,
         prevEditSys = {},
         sysTypeMap = {},
         versionReg = /^v\d{2}.\d{2}.\d{2}$/,
@@ -40,7 +42,11 @@ plMod.controller('managesysCtrl', ['managesysService', '$q', '$scope', 'commServ
                 list[i].pkgTypeName = sysTypeMap[list[i].pkgType];
             }
             self.sysList = list;
+            self.pageNum = data.pages.pageNum;
+            self.pageSize = paramObj.pageSize;
             self.totalPage = data.pages.pages;
+            queryConditionObj = paramObj;
+            localStorage.setItem('sys_packages_condition', JSON.stringify(queryConditionObj));
             curPageSize = paramObj.pageSize;
         }).catch(function () {
             self.sysList = [];
@@ -166,9 +172,14 @@ plMod.controller('managesysCtrl', ['managesysService', '$q', '$scope', 'commServ
         for(var i = 0, l = list.length;i < l;i += 1){
             sysTypeMap[list[i].name] = list[i].nameCn;
         }
-        self.getSysList({
-            pageNum: 1,
-            pageSize: 20
-        });
+        cacheQueryObj = localStorage.getItem('sys_packages_condition');
+        if(cacheQueryObj){
+            cacheQueryObj = JSON.parse(cacheQueryObj);
+        }
+        cacheQueryObj = cacheQueryObj || {
+                pageNum: 1,
+                pageSize: 20
+            };
+        self.getSysList(cacheQueryObj);
     });
 }]);

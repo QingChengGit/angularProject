@@ -9,31 +9,31 @@ plMod.directive('pagingBar', function () {
         '<span class="item item-text">第</span><input type="text" class="item paging-input" ng-init="pageNum = 1" ng-model="pageNum" /><span class="item item-text">页</span>' +
         '<span class="item paging-item" ng-click="goTargetPage();">跳转</span>' +
         '<span class="item item-text">共{{totalPage}}页,每页显示</span>' +
-        '<select ng-init="pageSize = \'20\'" ng-model="pageSize" class="item paging-select" ng-change="switchSize();">' +
-        '<option value="20" selected="selected">20</option><option value="50">50</option><option value="100">100</option>' +
-        '</select>' +
+        '<select ng-model="pageSize" class="item paging-select" ' +
+        'ng-options="item for item in pageSizeArr" ng-change="switchSize();"></select>' +
         '</div>';
 
     function link(scope, ele, attr){
+        scope.pageSizeArr = [20, 50, 100,200];
         scope.goFirst = function () {
             scope.pageNum = 1;
             scope.pageAction({
-                param: $.extend({
+                param: $.extend(scope.pagingParam, {
                     pageNum: scope.pageNum,
                     pageSize: scope.pageSize
-                }, scope.pagingParam)
+                })
             });
         };
         scope.goPrev = function () {
             if(scope.pageNum <= 1 || scope.pageNum > (scope.totalPage + 1)){
                 return;
             }
-            scope.pageNum = parseInt(scope.pageNum) - 1;
+            scope.pageNum = parseInt(scope.pageNum, 10) - 1;
             scope.pageAction({
-                param: $.extend({
+                param: $.extend(scope.pagingParam, {
                     pageNum: scope.pageNum,
                     pageSize: scope.pageSize
-                }, scope.pagingParam)
+                })
             });
         };
         scope.goNext = function () {
@@ -41,21 +41,21 @@ plMod.directive('pagingBar', function () {
                 scope.pageNum = scope.totalPage;
                 return;
             }
-            scope.pageNum = parseInt(scope.pageNum) + 1;
+            scope.pageNum = parseInt(scope.pageNum, 10) + 1;
             scope.pageAction({
-                param: $.extend({
+                param: $.extend(scope.pagingParam, {
                     pageNum: scope.pageNum,
                     pageSize: scope.pageSize
-                }, scope.pagingParam)
+                })
             });
         };
         scope.goLast = function () {
             scope.pageNum = scope.totalPage;
             scope.pageAction({
-                param: $.extend({
+                param: $.extend(scope.pagingParam, {
                     pageNum: scope.pageNum,
                     pageSize: scope.pageSize
-                }, scope.pagingParam)
+                })
             });
         };
         scope.goTargetPage = function () {
@@ -65,10 +65,10 @@ plMod.directive('pagingBar', function () {
                 return;
             }
             scope.pageAction({
-                param: $.extend({
+                param: $.extend(scope.pagingParam, {
                     pageNum: scope.pageNum,
                     pageSize: scope.pageSize
-                }, scope.pagingParam)
+                })
             });
         };
         scope.switchSize = function () {
@@ -78,10 +78,10 @@ plMod.directive('pagingBar', function () {
             //重置pageNum为第一页
             scope.pageNum = 1;
             scope.pageAction({
-                param: $.extend({
+                param: $.extend(scope.pagingParam, {
                     pageNum: scope.pageNum,
                     pageSize: scope.pageSize
-                }, scope.pagingParam)
+                })
             });
         };
     }
@@ -95,6 +95,7 @@ plMod.directive('pagingBar', function () {
             pageAction: '&',
             pagingParam: '=',
             pageNum: '=',
+            pageSize: '=',
             totalPage: '='
         },
         link: link

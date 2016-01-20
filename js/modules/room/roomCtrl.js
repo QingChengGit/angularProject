@@ -5,7 +5,8 @@ plMod.controller('roomCtrl', ['$routeParams', '$location', 'roomService', 'roomT
     var self = this,
         confLimitOb = {},
         roomTypeMap = {},
-        curPageSize,
+        queryConditionObj,
+        cacheQueryObj,
         prevEditRoom;
     self.isEdit = false;
     self.type = $routeParams.operateType;
@@ -18,8 +19,11 @@ plMod.controller('roomCtrl', ['$routeParams', '$location', 'roomService', 'roomT
             for(var i = 0,l = self.roomList.length;i < l;i += 1){
                 self.roomList[i].roomTypeName = roomTypeMap[self.roomList[i].roomType];
             }
+            self.pageNum = data.pages.pageNum;
+            self.pageSize = data.pages.pageSize;
             self.totalPage = data.pages.pages;
-            curPageSize = data.pages.pageSize;
+            queryConditionObj = paramObj;
+            localStorage.setItem('room_condition', JSON.stringify(queryConditionObj));
         }).catch(function () {
             self.roomList = [];
         });
@@ -172,10 +176,7 @@ plMod.controller('roomCtrl', ['$routeParams', '$location', 'roomService', 'roomT
             if(response.status){
                 alert('导入成功!');
                 getRoomTypeList().then(function () {
-                    self.getRoomList({
-                        pageNum: 1,
-                        pageSize: 20
-                    });
+                    self.getRoomList(cacheQueryObj);
                 });
             }else{
                 alert(response.msg);
@@ -223,10 +224,15 @@ plMod.controller('roomCtrl', ['$routeParams', '$location', 'roomService', 'roomT
 
     getRoomTypeList().then(function () {
         if(self.type === 'roomList'){
-            self.getRoomList({
-                pageNum: 1,
-                pageSize: 20
-            });
+            cacheQueryObj = localStorage.getItem('room_condition');
+            if(cacheQueryObj){
+                cacheQueryObj = JSON.parse(cacheQueryObj);
+            }
+            cacheQueryObj = cacheQueryObj || {
+                    pageNum: 1,
+                    pageSize: 20
+                };
+            self.getRoomList(cacheQueryObj);
             initUploader();
         }else if(self.type === 'editRoom'){
             service.getRoomInfo(self.param).then(function (data) {

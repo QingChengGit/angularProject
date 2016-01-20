@@ -2,17 +2,29 @@
  * Created by Administrator on 2015/11/13.
  */
 plMod.controller('monitorCtrl', ['monitorService', '$routeParams', '$location', 'commService', 'dialogService',
-    function (service, $routeParams, $location, commService, dialogService) {
+    'hotelService',function (service, $routeParams, $location, commService, dialogService, hotelService) {
     var self = this,
-        curPageSize = 10,
-        hotelBrandMap = {};
+        hotelBrandMap = {},
+        selectedRooms = [],
+        queryConditionObj,
+        cacheQueryObj;
     self.isEdit = false;
     self.type = $routeParams.operateType;
     self.param = $routeParams.param;
     self.hotelName = '';
+    //省份搜索条件
+    self.conditProv = '';
     if(self.type === 'list'){
-        self.pagingParam = {
+        cacheQueryObj = localStorage.getItem('monitor_condition');
+        if(cacheQueryObj){
+            cacheQueryObj = JSON.parse(cacheQueryObj);
+            self.hotelName = cacheQueryObj.name;
+            self.conditProv = cacheQueryObj.province;
+            self.condition = cacheQueryObj.condition;
+        }
+        self.pagingParam = cacheQueryObj || {
             name: '',
+            province: '',
             condition: ''
         };
     }else{
@@ -30,18 +42,28 @@ plMod.controller('monitorCtrl', ['monitorService', '$routeParams', '$location', 
             }
             self.monitorList = data.list;
             self.pageNum = data.pages.pageNum;
+            self.pageSize = data.pages.pageSize;
             self.totalPage = data.pages.pages;
-            curPageSize = paramObj.pageSize;
+            queryConditionObj = paramObj;
+            localStorage.setItem('monitor_condition', JSON.stringify(queryConditionObj));
         }).catch(function () {
             self.monitorList = [];
         });
     };
     this.getRCUList = function (paramObj) {
         service.fetchRCUList(paramObj).then(function (data) {
-            self.rcuList = data.list;
+            var list = data.list;
+            for(var i = 0;i < list.length;i += 1){
+                list[i].isSelect = false;
+            }
+            self.rcuList = list;
             self.pageNum = data.pages.pageNum;
+            self.pageSize = data.pages.pageSize;
             self.totalPage = data.pages.pages;
-            curPageSize = paramObj.pageSize;
+            data.hotelTvInfo.brandName = hotelBrandMap[data.hotelTvInfo.brandName];
+            self.hotelInfo = data.hotelTvInfo;
+            queryConditionObj = paramObj;
+            localStorage.setItem('monitory_rcu_condition', JSON.stringify(queryConditionObj));
         }).catch(function () {
             self.rcuList = [];
         });
@@ -50,10 +72,12 @@ plMod.controller('monitorCtrl', ['monitorService', '$routeParams', '$location', 
         service.fetchTVVersionList(paramObj).then(function (data) {
             self.tvList = data.list;
             self.pageNum = data.pages.pageNum;
+            self.pageSize = data.pages.pageSize;
             self.totalPage = data.pages.pages;
             data.hotelTvInfo.brandName = hotelBrandMap[data.hotelTvInfo.brandName];
             self.hotelInfo = data.hotelTvInfo;
-            curPageSize = paramObj.pageSize;
+            queryConditionObj = paramObj;
+            localStorage.setItem('monitor_tv_condition', JSON.stringify(queryConditionObj));
         }).catch(function () {
             self.tvList = [];
         });
@@ -109,42 +133,38 @@ plMod.controller('monitorCtrl', ['monitorService', '$routeParams', '$location', 
         });
     }
     this.updateRCU = function (item) {
-        self.curMonitorRCU = item;
+        if(selectedRooms.length <= 0){
+            alert('请选择要修改的房间!');
+            return;
+        }
         var str = '<form name="monitorForm" class="pl-form monitor-form" novalidate>' +
-            '<div class="form-item"><label class="form-key">房间号:</label>' +
-            '<label class="form-value">' + self.curMonitorRCU.roomNum + '</label>' +
-            '</div>' +
             '<div class="form-item"><label class="form-key">RCU设置时长:</label>' +
-            '<input class="form-value expireTime" type="text" value="' + self.curMonitorRCU.limitedTime + '"/>小时' +
+            '<input class="form-value expireTime" type="text" value=""/>小时' +
             '</div>' +
             '</form>';
         dialogService.confirm({
-            title: '修改RCU时长',
+            title: '修改RCU设置时长',
             template: str,
             width: 480,
             okHandler: saveRCU
         });
     };
     function saveRCU(){
-        var time = $('.expireTime').val(),
-            data = {};
+        var time = $('.expireTime').val();
         if(!time || isNaN(time) || !/^\d{1,8}$/.test(time) || parseInt(time) <= 0){
-            alert('请输入正确的RCU到期时间,最大8位正整数!');
+            alert('请输入正确的RCU设置时长,最大8位正整数!');
             return;
         }
-        if(parseInt(time) <= parseInt(self.curMonitorRCU.runningTimeNum)){
+        /*if(parseInt(time) <= parseInt(self.curMonitorRCU.runningTimeNum)){
             alert('RCU设置时长不能少于已运行时长!');
             return;
-        }
-        data.id = self.curMonitorRCU.id;
-        data.hotelId = self.curMonitorRCU.hotelId;
-        data.limitedTime = time;
-        service.updateRCU(data).then(function (flag) {
-            self.getRCUList({
-                pageNum: 1,
-                pageSize: curPageSize,
+        }*/
+        service.batchUpdateRCU(self.rcuList[0].hotelId, time, selectedRooms.join(',')).then(function (flag) {
+            self.getRCUList($.extend(queryConditionObj, {
                 hotelId: self.param
-            });
+            }));
+            self.isSelectAll = false;
+            selectedRooms = [];
             alert('操作成功!');
         }).catch(function () {
             alert('操作失败!');
@@ -152,25 +172,12 @@ plMod.controller('monitorCtrl', ['monitorService', '$routeParams', '$location', 
     }
     this.changeMonitorList = function (content) {
         self.pagingParam.condition = content || '';
+        self.pagingParam.province = self.conditProv;
         self.pagingParam.name = self.hotelName;
-        self.getMonitorList($.extend({
-            pageNum: 1,
-            pageSize: 20
-        }, self.pagingParam));
+        queryConditionObj.pageNum = 1;
+        self.getMonitorList($.extend(queryConditionObj, self.pagingParam));
     };
-    this.switchSort = function () {
-        if(!self.monitorOrderBy || self.monitorOrderBy === 'desc'){
-            self.monitorOrderBy = 'asc';
-        }else{
-            self.monitorOrderBy = 'desc';
-        }
-        self.pagingParam.orderBy = self.monitorOrderBy;
-        self.getMonitorList($.extend({
-            pageNum: self.pageNum,
-            pageSize: curPageSize
-        }, self.pagingParam));
-    };
-    this.switchTvSort = function (sortField, columnName) {
+    this.switchSort = function (sortType, sortField, columnName) {
         if(!self[sortField] || self[sortField] === 'desc'){
             self[sortField] = 'asc';
         }else{
@@ -178,10 +185,46 @@ plMod.controller('monitorCtrl', ['monitorService', '$routeParams', '$location', 
         }
         self.pagingParam[sortField] = self[sortField];
         self.pagingParam.columnName = columnName;
-        self.getTVVersionList($.extend({
-            pageNum: self.pageNum,
-            pageSize: curPageSize
-        }, self.pagingParam));
+        if(sortType === 'tv'){
+            self.getTVVersionList($.extend(queryConditionObj, self.pagingParam));
+        }else if(sortType === 'rcu'){
+            self.getRCUList($.extend(queryConditionObj, self.pagingParam));
+        }
+
+    };
+    this.selectAll = function () {
+        var rucList = self.rcuList;
+        selectedRooms = [];
+        for(var i = 0;i < rucList.length;i += 1){
+            rucList[i].isSelect = self.isSelectAll;
+            self.isSelectAll && selectedRooms.push(rucList[i].roomNum);
+        }
+    };
+    this.select = function (rcu) {
+        var rucList = self.rcuList;
+        if(rcu.isSelect){
+            selectedRooms.push(rcu.roomNum);
+        }else{
+            for(var m = 0;m <selectedRooms.length;s += 1){
+                if(selectedRooms[m] === rcu.roomNum){
+                    selectedRooms.splice(m ,1);
+                    break;
+                }
+            }
+        }
+        if(!rcu.isSelect && self.isSelectAll){
+            //取消全选中状态
+            self.isSelectAll = false;
+            return;
+        }
+        for(var i = 0;i < rucList.length;i += 1){
+            if(!rucList[i].isSelect){
+                break;
+            }
+        }
+        if(i == rucList.length){
+            self.isSelectAll = true;
+        }
     };
     this.backListView = function () {
         window.history.back();
@@ -194,23 +237,43 @@ plMod.controller('monitorCtrl', ['monitorService', '$routeParams', '$location', 
             hotelBrandMap[self.brandList[i].id] = self.brandList[i].nameCn;
         }
     }).then(function () {
+        var condition;
         if(self.type === 'list'){
-            self.getMonitorList({
-                pageNum: 1,
-                pageSize: 20
-            });
+            cacheQueryObj = localStorage.getItem('monitor_condition');
+            if(cacheQueryObj){
+                cacheQueryObj = JSON.parse(cacheQueryObj);
+            }
+            condition = cacheQueryObj || {
+                    pageNum: 1,
+                    pageSize: 20
+                };
+            self.getMonitorList(condition);
+            self.provList = hotelService.getAllProvince();
         }else if(self.type === 'rcu'){
-            self.getRCUList({
-                pageNum: 1,
-                pageSize: 20,
+            self.curTime = new Date().toLocaleString();
+            cacheQueryObj = localStorage.getItem('monitory_rcu_condition');
+            if(cacheQueryObj){
+                cacheQueryObj = JSON.parse(cacheQueryObj);
+            }
+            condition = cacheQueryObj || {
+                    pageNum: 1,
+                    pageSize: 20
+                };
+            self.getRCUList($.extend(condition, {
                 hotelId: self.param
-            });
+            }));
         }else if(self.type === 'tv'){
-            self.getTVVersionList({
-                pageNum: 1,
-                pageSize: 20,
+            cacheQueryObj = localStorage.getItem('monitor_tv_condition');
+            if(cacheQueryObj){
+                cacheQueryObj = JSON.parse(cacheQueryObj);
+            }
+            condition = cacheQueryObj || {
+                    pageNum: 1,
+                    pageSize: 20
+                };
+            self.getTVVersionList($.extend(condition, {
                 hotelId: self.param
-            });
+            }));
         }
     });
 }]);

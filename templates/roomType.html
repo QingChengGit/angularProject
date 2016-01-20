@@ -1,19 +1,22 @@
 <div class="roomType" ng-if="roomType.type==='list' && main.isHotel">
     <title-bar title-name="房型管理" show-search="false"></title-bar>
-    <table class="pl-table">
-        <tbody>
-        <tr class="title-tr">
-            <td class="w10">序号</td><td class="w20">房间类型</td><td class="w20">操作</td>
-        </tr>
-        <tr ng-repeat="item in roomType.roomTypeList">
-            <td class="w5" ng-bind="$index+1"></td><td class="w20" ng-bind="item.name"></td>
-            <td class="operate-btn">
-                <a class="link-btn" ng-click="roomType.goEditRoomType(item);">编辑</a>
-                <a class="link-btn" ng-if="roomType.roomTypeList.length > 1" ng-click="roomType.deleteRoomType(item);">删除</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <paging-bar page-action="roomType.getRoomTypeList(param);" total-page="roomType.totalPage"
-                is-show-add-btn="true" add-list-item="roomType.goAddRoomType();"></paging-bar>
+    <div class="gird-wrap">
+        <table class="pl-table">
+            <tbody>
+            <tr class="title-tr">
+                <td class="w10">序号</td><td class="w20">房间类型</td><td class="w20">操作</td>
+            </tr>
+            <tr ng-repeat="item in roomType.roomTypeList">
+                <td class="w5" ng-bind="$index+1"></td><td class="w20" ng-bind="item.name"></td>
+                <td class="operate-btn">
+                    <a class="link-btn" ng-click="roomType.goEditRoomType(item);">编辑</a>
+                    <a class="link-btn" ng-if="roomType.roomTypeList.length > 1" ng-click="roomType.deleteRoomType(item);">删除</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <paging-bar page-action="roomType.getRoomTypeList(param);" total-page="roomType.totalPage"
+                    page-num="roomType.pageNum" page-size="roomType.pageSize" is-show-add-btn="true"
+                    add-list-item="roomType.goAddRoomType();"></paging-bar>
+    </div>
 </div>

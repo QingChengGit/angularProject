@@ -1,25 +1,31 @@
 <div class="tvChannel" ng-if="!main.isSuper && !tv.isEdit">
     <title-bar title-name="频道管理" show-search="false"></title-bar>
-    <table class="pl-table">
-        <tbody>
-        <tr class="title-tr">
-            <td class="w10">序号</td><td class="w20">频道名称</td><td class="w20">英文名称</td><td class="w10">频道序号</td>
-            <td class="w20">所属类型</td><td class="w15">操作</td>
-        </tr>
-        <tr ng-repeat="item in tv.channels">
-            <td class="w10" ng-bind="$index + 1"></td><td class="w20" ng-bind="item.nameCn"></td>
-            <td ng-bind="item.nameEn"></td><td ng-bind="item.orderNum"></td>
-            <td ng-bind="item.menuTypeCn"></td>
-            <td class="operate-btn">
-                <a class="link-btn" ng-click="tv.editChannel(item);">编辑</a>
-                <a class="link-btn" ng-click="tv.deleteChannel(item.id);">删除</a>
-                <a class="link-btn" ng-href="#tv/Two/{{item.id}}">查看子频道</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <paging-bar page-action="tv.getTvChannels(param);" is-show-add-btn="true" add-list-item="tv.addChannel();"
-                paging-param="tv.pagingParam" total-page="tv.totalPage"></paging-bar>
+    <div class="gird-wrap">
+        <div class="list-search-area">
+            <a class="blue-btn" ng-href="#tv/preview/Date.now()?type=channel">预览</a>
+        </div>
+        <table class="pl-table">
+            <tbody>
+            <tr class="title-tr">
+                <td class="w10">序号</td><td class="w20">频道名称</td><td class="w20">英文名称</td><td class="w10">频道序号</td>
+                <td class="w20">所属类型</td><td class="w20">操作</td>
+            </tr>
+            <tr ng-repeat="item in tv.channels">
+                <td class="w10" ng-bind="$index + 1"></td><td class="w20" ng-bind="item.nameCn"></td>
+                <td ng-bind="item.nameEn"></td><td ng-bind="item.orderNum"></td>
+                <td ng-bind="item.menuTypeCn"></td>
+                <td class="operate-btn">
+                    <a class="link-btn" ng-click="tv.editChannel(item);">编辑</a>
+                    <a class="link-btn" ng-click="tv.deleteChannel(item.id);">删除</a>
+                    <a class="link-btn" ng-href="#tv/Two/{{item.id}}">查看子频道</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <paging-bar page-action="tv.getTvChannels(param);" is-show-add-btn="true" add-list-item="tv.addChannel();"
+                    page-num="tv.pageNum" page-size="tv.pageSize" paging-param="tv.pagingParam"
+                    total-page="tv.totalPage"></paging-bar>
+    </div>
 </div>
 <div class="tvChannel" ng-if="!main.isSuper && tv.isEdit">
     <title-bar title-name="添加频道信息" ng-if="tv.channelOperate==='add'" show-search="false"></title-bar>

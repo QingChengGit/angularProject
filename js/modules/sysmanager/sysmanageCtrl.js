@@ -4,6 +4,8 @@
 plMod.controller('sysmanageCtrl', ['$routeParams', '$q', 'sysmanageService', 'commService', function ($routeParams, $q, service, commService) {
     var self = this,
         curParentId,
+        queryConditionObj,
+        cacheQueryObj,
         curPageSize,
         prevEditDict = {},
         hotelBrandMap = {},
@@ -27,6 +29,14 @@ plMod.controller('sysmanageCtrl', ['$routeParams', '$q', 'sysmanageService', 'co
             parentId: 0
         };
     }else if(self.type === 'install'){
+        cacheQueryObj = localStorage.getItem('install_condition');
+        if(cacheQueryObj){
+            cacheQueryObj = JSON.parse(cacheQueryObj);
+            self.hotelName = cacheQueryObj.hotelName;
+            self.pkgType = cacheQueryObj.pkgType;
+            self.isOnline = cacheQueryObj.isOnline;
+            self.subName = cacheQueryObj.subName;
+        }
         self.pagingParam = {
             hotelName: '',
             pkgType: '',
@@ -47,6 +57,7 @@ plMod.controller('sysmanageCtrl', ['$routeParams', '$q', 'sysmanageService', 'co
                 self.dictList = list;
             }
             self.totalPage = data.pages.pages;
+            pagingObj = paramObj;
             curPageSize = paramObj.pageSize;
         }).catch(function () {
             if(self.isShowDetail) {
@@ -60,11 +71,9 @@ plMod.controller('sysmanageCtrl', ['$routeParams', '$q', 'sysmanageService', 'co
         self.isShowDetail = true;
         self.pagingParam.parentId = item.id;
         curParentId = item.id;
-        self.getDictList({
-            pageNum: 1,
-            pageSize: 20,
+        self.getDictList($.extend(pagingObj, {
             parentId: item.id
-        });
+        }));
     };
     this.backSummary = function () {
         self.isShowDetail = false;
@@ -88,20 +97,16 @@ plMod.controller('sysmanageCtrl', ['$routeParams', '$q', 'sysmanageService', 'co
                 self.dictDetailList.unshift(data);
             }else{
                 if(self.isShowDetail && self.dictDetailList.length === curPageSize){
-                    self.getDictList({
-                        pageNum: 1,
-                        pageSize: 20,
+                    self.getDictList($.extend(pagingObj, {
                         parentId: self.pagingParam.parentId
-                    });
+                    }));
                 }
                 if(self.dictList.length === 0 || self.dictList.length < curPageSize){
                     self.dictList.unshift(data);
                 }else{
-                    self.getDictList({
-                        pageNum: 1,
-                        pageSize: 20,
+                    self.getDictList($.extend(pagingObj, {
                         parentId: 0
-                    });
+                    }));
                 }
             }
             alert('添加成功!');
@@ -160,8 +165,10 @@ plMod.controller('sysmanageCtrl', ['$routeParams', '$q', 'sysmanageService', 'co
             }
             self.installList = list;
             self.pageNum = data.pages.pageNum;
+            self.pageSize = paramObj.pageSize;
             self.totalPage = data.pages.pages;
-            pagingObj = paramObj;
+            queryConditionObj = paramObj;
+            localStorage.setItem('install_condition', JSON.stringify(queryConditionObj));
         }).catch(function () {
             self.installList = [];
         });
@@ -171,10 +178,9 @@ plMod.controller('sysmanageCtrl', ['$routeParams', '$q', 'sysmanageService', 'co
         self.pagingParam.hotelName = self.hotelName;
         self.pagingParam.pkgType = self.pkgType;
         self.pagingParam.isOnline = self.isOnline;
-        self.getInstallList($.extend({
-            pageNum: 1,
-            pageSize: 20
-        }, self.pagingParam));
+        //需要重置下pageNum为1
+        cacheQueryObj.pageNum = 1;
+        self.getInstallList($.extend(cacheQueryObj, self.pagingParam));
     };
     this.upgrade = function (link) {
         service.upgrade(link).then(function (data) {
@@ -185,7 +191,7 @@ plMod.controller('sysmanageCtrl', ['$routeParams', '$q', 'sysmanageService', 'co
             }else{
                 alert('升级失败!');
             }
-            self.getInstallList(pagingObj);
+            self.getInstallList(cacheQueryObj);
         }).catch(function () {
             alert('升级失败');
         });
@@ -195,6 +201,16 @@ plMod.controller('sysmanageCtrl', ['$routeParams', '$q', 'sysmanageService', 'co
         self.isAdd = false;
         self.curDict = dict;
         prevEditDict = $.extend({}, dict);
+    };
+    this.switchSort = function (sortField, columnName) {
+        if(!self[sortField] || self[sortField] === 'desc'){
+            self[sortField] = 'asc';
+        }else{
+            self[sortField] = 'desc';
+        }
+        self.pagingParam[sortField] = self[sortField];
+        self.pagingParam.columnName = columnName;
+        self.getInstallList($.extend(cacheQueryObj, self.pagingParam));
     };
     this.backListView = function () {
         self.isEdit = false;
@@ -221,10 +237,11 @@ plMod.controller('sysmanageCtrl', ['$routeParams', '$q', 'sysmanageService', 'co
                 parentId: 0
             });
         }else if(self.type === 'install'){
-            self.getInstallList({
-                pageNum: 1,
-                pageSize: 20
-            });
+            cacheQueryObj = cacheQueryObj || {
+                    pageNum: 1,
+                    pageSize: 20
+                };
+            self.getInstallList(cacheQueryObj);
         }
     });
 }]);

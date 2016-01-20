@@ -6,30 +6,33 @@
                 ng-change="menu.changeMenuList(menu.userType);" required>
             <option value="-100" selected="selected">超级管理员</option>
             <option value="-200">管理员</option>
+            <option value="-400">酒店管理员</option>
             <option value="-300">普通用户</option>
         </select>
         <label class="tip-text">下的菜单</label>
     </div>
     <a class="back-btn link-btn" ng-if="menu.type==='list' && menu.param > 0" ng-click="menu.backListView();">返回</a>
-    <table class="pl-table">
-        <tbody>
-        <tr class="title-tr">
-            <td class="w5">序号</td><td class="w20">菜单名称</td><td class="w20">英文名</td>
-            <td class="w8">菜单顺序号</td><td class="w20">菜单路径</td><td class="w10">操作</td>
-        </tr>
-        <tr ng-repeat="item in menu.menuList">
-            <td class="w5" ng-bind="$index+1"></td><td class="w20" ng-bind="item.nameCn"></td>
-            <td ng-bind="item.nameEn"></td><td ng-bind="item.orderNum"></td><td ng-bind="item.target"></td>
-            <td class="operate-btn">
-                <a class="link-btn" ng-if="menu.param <= 0" ng-href="#/menu/list/{{item.id}}">查看子菜单</a>
-                <a class="link-btn" ng-href="#/menu/modify/{{item.id}}">编辑</a>
-                <a class="link-btn" ng-click="menu.deleteMenu(item);">删除</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <paging-bar page-action="menu.getMenuList(param);" paging-param="menu.pagingParam" total-page="menu.totalPage"
-                is-show-add-btn="true" add-list-item="menu.goAddMenu();"></paging-bar>
+    <div class="gird-wrap">
+        <table class="pl-table">
+            <tbody>
+            <tr class="title-tr">
+                <td class="w5">序号</td><td class="w20">菜单名称</td><td class="w20">英文名</td>
+                <td class="w8">菜单顺序号</td><td class="w20">菜单路径</td><td class="w20">操作</td>
+            </tr>
+            <tr ng-repeat="item in menu.menuList">
+                <td class="w5" ng-bind="$index+1"></td><td class="w20" ng-bind="item.nameCn"></td>
+                <td ng-bind="item.nameEn"></td><td ng-bind="item.orderNum"></td><td ng-bind="item.target"></td>
+                <td class="operate-btn">
+                    <a class="link-btn" ng-if="menu.param <= 0" ng-href="#/menu/list/{{item.id}}">查看子菜单</a>
+                    <a class="link-btn" ng-href="#/menu/modify/{{item.id}}">编辑</a>
+                    <a class="link-btn" ng-click="menu.deleteMenu(item);">删除</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <paging-bar page-action="menu.getMenuList(param);" paging-param="menu.pagingParam" total-page="menu.totalPage"
+                    is-show-add-btn="true" add-list-item="menu.goAddMenu();"></paging-bar>
+    </div>
 </div>
 <div class="menu" ng-if="menu.type!=='list' && main.isHigherSuper">
     <title-bar title-name="添加系统菜单信息" ng-if="menu.type==='add'" show-search="false"></title-bar>
