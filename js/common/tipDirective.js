@@ -25,7 +25,7 @@ plMod.directive('tip', function () {
             if(!target){
                 if(tipNode){
                     tipNode.removeEventListener('mouseout', tipOutHandler, false);
-                    document.body.removeChild(tipNode);
+                    tipOutHandler();
                 }
                 return false;
             }
@@ -49,7 +49,7 @@ plMod.directive('tip', function () {
             tipNode.addEventListener('mouseout', tipOutHandler, false);
         });
         el.mouseleave(function (evt) {
-            if(tipNode && evt.relatedTarget.className.indexOf('tip-container') === -1){
+            if(tipNode && (!evt.relatedTarget || evt.relatedTarget.className.indexOf('tip-container') === -1)){
                 //删除事件监听器
                 tipNode.removeEventListener('mouseout', tipOutHandler, false);
                 document.body.removeChild(tipNode);
@@ -57,7 +57,10 @@ plMod.directive('tip', function () {
         });
     }
     function tipOutHandler(){
-        document.body.removeChild(tipNode);
+        if(tipNode){
+            document.body.removeChild(tipNode);
+            tipNode = null;
+        }
     }
     return {
         restrict: 'A',
